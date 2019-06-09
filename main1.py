@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
 # NOTE: I downloaded the "OS Terrain 50" dataset in the "ESRI Shape (Contours)"
