@@ -11,12 +11,20 @@ fname0 = "terr50_cesh_gb.zip"
 
 # ******************************************************************************
 
-# Import modules ...
-import cartopy
+# Import standard modules ...
 import io
 import re
-import shapefile
 import zipfile
+
+# Import special modules ...
+try:
+    import cartopy
+except:
+    raise Exception("run \"pip install --user cartopy\"")
+try:
+    import shapefile
+except:
+    raise Exception("run \"pip install --user pyshp\"")
 
 # Compile regex to save time ...
 pat1 = re.compile(r"data/[a-z]+/[a-z]+[0-9]+_OST50CONT_[0-9]+.zip")
