@@ -1,5 +1,4 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 
 # NOTE: I downloaded the "OS Terrain 50" dataset in the "ESRI Shape (Contours)"
 #       file format from the Ordnance Survey, see:
@@ -48,8 +47,8 @@ for record in cartopy.io.shapereader.Reader(shape_file).records():
 
 # NOTE: By manual inspection the UK is 15.462484 wide and 10.938273 tall (don't
 #       forget Rockall).
-print "{:7.3f} <= x <= {:7.3f} ({:.6f} wide)".format(lon_min, lon_max, lon_max - lon_min)
-print "{:7.3f} <= y <= {:7.3f} ({:.6f} tall)".format(lat_min, lat_max, lat_max - lat_min)
+print("{:7.3f} <= x <= {:7.3f} ({:.6f} wide)".format(lon_min, lon_max, lon_max - lon_min))
+print("{:7.3f} <= y <= {:7.3f} ({:.6f} tall)".format(lat_min, lat_max, lat_max - lat_min))
 
 # ******************************************************************************
 # *                PART 2: LOAD THE OS CONTOURS AND MAKE MASKS                 *
@@ -64,7 +63,7 @@ pattern = re.compile(r"data/[a-z]+/[a-z]+[0-9]+_OST50CONT_[0-9]+.zip")
 # NOTE: By manual inspection on 2019-01-19 the limits are -11 and 134.
 levels = []                                                                     # [10m]
 contours = {}
-for level in xrange(-11, 135):
+for level in range(-11, 135):
     levels.append(level)                                                        # [10m]
     contours[level] = 0
     #contours[level] = []
@@ -128,6 +127,6 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
 #       swapping occurs (ignoring the ZFS caches). Lets go for 40,000 pixels by
 #       60,000 pixels (with a pixel being approximately 0.25 millidegrees).
 
-print "{:d} elevation levels".format(len(levels))
+print("{:d} elevation levels".format(len(levels)))
 for level in levels:
-    print level, contours[level]
+    print(level, contours[level])

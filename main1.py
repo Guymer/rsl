@@ -1,5 +1,4 @@
-#!/usr/bin/env python2
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 
 # NOTE: I downloaded the "OS Terrain 50" dataset in the "ESRI Shape (Contours)"
 #       file format from the Ordnance Survey, see:
@@ -52,7 +51,7 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
             shp_src = io.BytesIO(fobj1.read(key + "_line.shp"))
             shx_src = io.BytesIO(fobj1.read(key + "_line.shx"))
 
-            print fobj1.read(key + "_line.prj")
+            print(fobj1.read(key + "_line.prj"))
 
             # Load files as a shapefile ...
             with shapefile.Reader(dbf = dbf_src, shp = shp_src, shx = shx_src) as fobj2:
@@ -69,6 +68,6 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
                     if shapeRecord.record.FEAT_TYPE != "ContourLine":
                         continue
 
-                    print shapeRecord.record.PROP_VALUE
-                    print shapeRecord.shape.points
+                    print(shapeRecord.record.PROP_VALUE)
+                    print(shapeRecord.shape.points)
                     exit()
