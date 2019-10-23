@@ -53,21 +53,22 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
 
             print(fobj1.read(key + "_line.prj"))
 
-            # Load files as a shapefile ...
-            with shapefile.Reader(dbf = dbf_src, shp = shp_src, shx = shx_src) as fobj2:
-                # Loop over shape+record pairs ...
-                for shapeRecord in fobj2.shapeRecords():
-                    # Crash if this shape+record is not a polyline ...
-                    # NOTE: The shapefile is only supposed to contain contours
-                    #       and tide marks.
-                    if shapeRecord.shape.shapeTypeName != "POLYLINE":
-                        raise Exception("shape is not a POLYLINE")
+            # Open shapefile ...
+            fobj2 = shapefile.Reader(dbf = dbf_src, shp = shp_src, shx = shx_src)
 
-                    # Skip this shape+record if it is not a contour ...
-                    # NOTE: It is probably a tide mark.
-                    if shapeRecord.record.FEAT_TYPE != "ContourLine":
-                        continue
+            # Loop over shape+record pairs ...
+            for shapeRecord in fobj2.shapeRecords():
+                # Crash if this shape+record is not a polyline ...
+                # NOTE: The shapefile is only supposed to contain contours
+                #       and tide marks.
+                if shapeRecord.shape.shapeType != shapefile.POLYLINE:
+                    raise Exception("shape is not a POLYLINE")
 
-                    print(shapeRecord.record.PROP_VALUE)
-                    print(shapeRecord.shape.points)
-                    exit()
+                # Skip this shape+record if it is not a contour ...
+                # NOTE: It is probably a tide mark.
+                if shapeRecord.record[1] != "ContourLine":
+                    continue
+
+                print(shapeRecord.record)
+                print(shapeRecord.shape)
+                exit()

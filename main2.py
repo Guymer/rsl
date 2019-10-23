@@ -91,29 +91,29 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
             shp_src = io.BytesIO(fobj1.read(key + "_line.shp"))
             shx_src = io.BytesIO(fobj1.read(key + "_line.shx"))
 
-            #print fobj1.read(key + "_line.prj")
+            # Open shapefile ...
+            fobj2 = shapefile.Reader(dbf = dbf_src, shp = shp_src, shx = shx_src)
 
-            # Load files as a shapefile ...
-            with shapefile.Reader(dbf = dbf_src, shp = shp_src, shx = shx_src) as fobj2:
-                # Loop over shape+record pairs ...
-                for shapeRecord in fobj2.shapeRecords():
-                    # Crash if this shape+record is not a polyline ...
-                    # NOTE: The shapefile is only supposed to contain contours
-                    #       and tide marks.
-                    if shapeRecord.shape.shapeTypeName != "POLYLINE":
-                        raise Exception("shape is not a POLYLINE")
+            # Loop over shape+record pairs ...
+            for shapeRecord in fobj2.shapeRecords():
+                # Crash if this shape+record is not a polyline ...
+                # NOTE: The shapefile is only supposed to contain contours
+                #       and tide marks.
+                if shapeRecord.shape.shapeType != shapefile.POLYLINE:
+                    raise Exception("shape is not a POLYLINE")
 
-                    # Skip this shape+record if it is not a contour ...
-                    # NOTE: It is probably a tide mark.
-                    if shapeRecord.record.FEAT_TYPE != "ContourLine":
-                        continue
+                # Skip this shape+record if it is not a contour ...
+                # NOTE: It is probably a tide mark.
+                if shapeRecord.record[1] != "ContourLine":
+                    continue
 
-                    # Convert elevation into index and append to list ...
-                    level = int(shapeRecord.record.PROP_VALUE) / 10             # [10m]
-                    contours[level] += 1
-                    #contours[level].append(shapeRecord.shape)
+                # Convert elevation into index and append to list ...
+                level = int(shapeRecord.record[3]) / 10                         # [10m]
+                contours[level] += 1
+                #contours[level].append(shapeRecord.shape)
 
             # Clean up ...
+            del fobj2
             del dbf_src
             del shp_src
             del shx_src
