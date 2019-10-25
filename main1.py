@@ -10,9 +10,6 @@
 #         * https://www.ordnancesurvey.co.uk/business-and-government/products/terrain-50.html
 #       This gave me the "terr50_cesh_gb.zip" file that is used here.
 
-# Specify the path to the "OS Terrain 50" dataset ...
-fname0 = "terr50_cesh_gb.zip"
-
 # ******************************************************************************
 
 # Import standard modules ...
@@ -29,6 +26,11 @@ try:
     import shapefile
 except:
     raise Exception("run \"pip install --user pyshp\"")
+
+# NOTE: https://scitools.org.uk/cartopy/docs/latest/crs/projections.html#osgb
+
+# Specify the path to the "OS Terrain 50" dataset ...
+fname0 = "terr50_cesh_gb.zip"
 
 # Compile regex to save time ...
 pat1 = re.compile(r"data/[a-z]+/[a-z]+[0-9]+_OST50CONT_[0-9]+.zip")

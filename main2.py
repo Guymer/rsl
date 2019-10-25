@@ -10,9 +10,6 @@
 #         * https://www.ordnancesurvey.co.uk/business-and-government/products/terrain-50.html
 #       This gave me the "terr50_cesh_gb.zip" file that is used here.
 
-# Specify the path to the "OS Terrain 50" dataset ...
-fname0 = "terr50_cesh_gb.zip"
-
 # ******************************************************************************
 
 # Import standard modules ...
@@ -60,6 +57,9 @@ print("{:7.3f} <= y <= {:7.3f} ({:.6f} tall)".format(lat_min, lat_max, lat_max -
 # ******************************************************************************
 
 # NOTE: https://scitools.org.uk/cartopy/docs/latest/crs/projections.html#osgb
+
+# Specify the path to the "OS Terrain 50" dataset ...
+fname0 = "terr50_cesh_gb.zip"
 
 # Compile regex to save time ...
 pattern = re.compile(r"data/[a-z]+/[a-z]+[0-9]+_OST50CONT_[0-9]+.zip")
