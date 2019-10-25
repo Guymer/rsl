@@ -19,10 +19,6 @@ import zipfile
 
 # Import special modules ...
 try:
-    import cartopy
-except:
-    raise Exception("run \"pip install --user cartopy\"")
-try:
     import shapefile
 except:
     raise Exception("run \"pip install --user pyshp\"")
