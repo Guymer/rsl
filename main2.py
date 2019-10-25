@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+# NOTE: I downloaded the "OS Terrain 50" dataset in the "ASCII Grid and GML (Grid)"
+#       file format from the Ordnance Survey, see:
+#         * https://www.ordnancesurvey.co.uk/business-and-government/products/terrain-50.html
+#       This gave me the "terr50_gagg_gb.zip" file that is used here.
+
 # NOTE: I downloaded the "OS Terrain 50" dataset in the "ESRI Shape (Contours)"
 #       file format from the Ordnance Survey, see:
 #         * https://www.ordnancesurvey.co.uk/business-and-government/products/terrain-50.html
