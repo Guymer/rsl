@@ -86,18 +86,18 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
 
         # Read sub-dataset into RAM so that it becomes seekable ...
         # NOTE: https://stackoverflow.com/a/12025492
-        zip_src = io.BytesIO(fobj0.read(fname1))
+        zipObj = io.BytesIO(fobj0.read(fname1))
 
         # Load sub-dataset ...
-        with zipfile.ZipFile(zip_src, "r") as fobj1:
+        with zipfile.ZipFile(zipObj, "r") as fobj1:
             # Read files into RAM so that they become seekable ...
             # NOTE: https://stackoverflow.com/a/12025492
-            dbf_src = io.BytesIO(fobj1.read(key + "_line.dbf"))
-            shp_src = io.BytesIO(fobj1.read(key + "_line.shp"))
-            shx_src = io.BytesIO(fobj1.read(key + "_line.shx"))
+            dbfObj = io.BytesIO(fobj1.read(key + "_line.dbf"))
+            shpObj = io.BytesIO(fobj1.read(key + "_line.shp"))
+            shxObj = io.BytesIO(fobj1.read(key + "_line.shx"))
 
             # Open shapefile ...
-            fobj2 = shapefile.Reader(dbf = dbf_src, shp = shp_src, shx = shx_src)
+            fobj2 = shapefile.Reader(dbf = dbfObj, shp = shpObj, shx = shxObj)
 
             # Loop over shape+record pairs ...
             for shapeRecord in fobj2.shapeRecords():
@@ -119,12 +119,12 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
 
             # Clean up ...
             del fobj2
-            del dbf_src
-            del shp_src
-            del shx_src
+            del dbfObj
+            del shpObj
+            del shxObj
 
         # Clean up ...
-        del zip_src
+        del zipObj
 
 # NOTE: By manual inspection there are 146 levels. On a MacBook Pro with 8 GB of
 #       RAM that is upto 52.26 MiB of RAM per level, before swapping occurs. On
