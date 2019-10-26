@@ -231,7 +231,7 @@ MODULE mod_funcs
         !         * 1.0 =   flooded   = BLUE
         shrunkFlooded = shrunkFlooded / REAL(scale * scale, kind = REAL32)
 
-        ! Save shrunk mask ...
+        ! Save shrunk flood ...
         CALL sub_save_array_as_BIN(shrunkFlooded, TRIM(bname))
         CALL sub_save_array_as_PPM(shrunkFlooded, TRIM(iname), "g2b")
 
