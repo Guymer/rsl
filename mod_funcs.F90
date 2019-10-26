@@ -27,13 +27,13 @@ MODULE mod_funcs
         INTEGER(kind = INT64)                                                   :: iy2
 
         ! Loop over x-axis ...
-        DO ix = ixlo, ixhi
+        DO ix = ixlo, ixhi, 1_INT64
             ! Find the limits of the border around this pixel ...
             ix1 = MAX(ix - 1_INT64, ixlo)
             ix2 = MIN(ix + 1_INT64, ixhi)
 
             ! Loop over y-axis ...
-            DO iy = iylo, iyhi
+            DO iy = iylo, iyhi, 1_INT64
                 ! Find the limits of the border around this pixel ...
                 iy1 = MAX(iy - 1_INT64, iylo)
                 iy2 = MIN(iy + 1_INT64, iyhi)
