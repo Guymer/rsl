@@ -23,4 +23,7 @@ PROGRAM main
 
     ! Save scaled map ...
     CALL sub_save_array_as_PPM(elev, "terr50_gagg_gb.ppm", "jet")
+
+    ! Clean up ...
+    DEALLOCATE(elev)
 END PROGRAM main
