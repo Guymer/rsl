@@ -18,8 +18,8 @@ PROGRAM main
     CALL sub_allocate_array(elev, "elev", nx, ny, .TRUE._INT8)
     CALL sub_load_array_from_BIN(elev, "terr50_gagg_gb.bin")                    ! [m]
 
-    ! Scale map ...
-    elev = elev / MAXVAL(elev)
+    ! Scale map (up to 1,300m ASL) ...
+    elev = elev / 1300.0e0_REAL32
 
     ! Save scaled map ...
     CALL sub_save_array_as_PPM(elev, "terr50_gagg_gb.ppm", "jet")
