@@ -9,5 +9,6 @@ WARN_OPTS="-Wall -Wextra -Waliasing -Wconversion-extra -Wimplicit-interface -Wim
 MACH_OPTS="-m64"
 
 # Compile ...
+mpif90 -c ${LANG_OPTS} ${WARN_OPTS} ${MACH_OPTS} -Ifortranlib mod_funcs.F90
 mpif90 -c ${LANG_OPTS} ${WARN_OPTS} ${MACH_OPTS} -Ifortranlib convertBINtoPPM.F90
 mpif90 -o convertBINtoPPM ${LANG_OPTS} ${WARN_OPTS} ${MACH_OPTS} convertBINtoPPM.o fortranlib/*.o -Lfortranlib
