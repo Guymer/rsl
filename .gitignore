@@ -14,6 +14,7 @@ Thumbs.db
 __pycache__
 convertBINtoPPM
 createFlood
+createFlood_*.png
 
 # Hide output of Pylint ...
 pylint.log
@@ -22,6 +23,8 @@ pylint.log
 *.bin
 *.csv
 *.out
+*.pbm
+*.ppm
 *.zip
 terr50_cesh_gb.*
 terr50_gagg_gb.*
