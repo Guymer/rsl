@@ -13,12 +13,14 @@ Thumbs.db
 *.o
 __pycache__
 convertBINtoPPM
+createFlood
 
 # Hide output of Pylint ...
 pylint.log
 
 # Hide large datasets ...
 *.bin
+*.csv
 *.out
 *.zip
 terr50_cesh_gb.*
