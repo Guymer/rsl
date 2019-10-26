@@ -9,7 +9,10 @@ ehthumbs.db
 Thumbs.db
 
 # Hide compiled code ...
+*.mod
+*.o
 __pycache__
+convertBINtoPPM
 
 # Hide output of Pylint ...
 pylint.log
@@ -18,3 +21,5 @@ pylint.log
 *.bin
 *.out
 *.zip
+terr50_cesh_gb.*
+terr50_gagg_gb.*
