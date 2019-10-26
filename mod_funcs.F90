@@ -1,7 +1,7 @@
 MODULE mod_funcs
     CONTAINS
 
-    PURE SUBROUTINE incrementMask(nx, ny, elev, mask, ixlo, ixhi, iylo, iyhi)
+    PURE SUBROUTINE incrementFlood(nx, ny, elev, seaLevel, flooded, ixlo, ixhi, iylo, iyhi)
         ! Import modules ...
         USE ISO_FORTRAN_ENV
 
@@ -10,8 +10,9 @@ MODULE mod_funcs
         ! Declare inputs/outputs ...
         INTEGER(kind = INT64), INTENT(in)                                       :: nx
         INTEGER(kind = INT64), INTENT(in)                                       :: ny
-        INTEGER(kind = INT16), DIMENSION(nx, ny), INTENT(inout)                 :: elev
-        LOGICAL(kind = INT8), DIMENSION(nx, ny), INTENT(inout)                  :: mask
+        REAL(kind = REAL32), DIMENSION(nx, ny), INTENT(inout)                   :: elev
+        REAL(kind = REAL32), INTENT(in)                                         :: seaLevel
+        LOGICAL(kind = INT8), DIMENSION(nx, ny), INTENT(inout)                  :: flooded
         INTEGER(kind = INT64), INTENT(in)                                       :: ixlo
         INTEGER(kind = INT64), INTENT(in)                                       :: ixhi
         INTEGER(kind = INT64), INTENT(in)                                       :: iylo
@@ -37,22 +38,25 @@ MODULE mod_funcs
                 iy1 = MAX(iy - 1_INT64, iylo)
                 iy2 = MIN(iy + 1_INT64, iyhi)
 
-                ! Check that this pixel has not already been allowed ...
-                IF(.NOT. mask(ix, iy))THEN
-                    ! Check that this pixel is <= 2,500m ASL ...
-                    IF(elev(ix, iy) <= 2500_INT16)THEN
-                        ! Check that this pixel is accessible ...
-                        IF(ANY(mask(ix1:ix2, iy1:iy2)))THEN
-                            ! Allow pregnant women to go here ...
-                            mask(ix, iy) = .TRUE._INT8
+                ! Check that this pixel has not already been flooded ...
+                IF(.NOT. flooded(ix, iy))THEN
+                    ! Check that this pixel is <= sea level ...
+                    IF(elev(ix, iy) <= seaLevel)THEN
+                        ! Check that this pixel is next to a flooded pixel ...
+                        IF(ANY(flooded(ix1:ix2, iy1:iy2)))THEN
+                            ! Flood this pixel ...
+                            ! NOTE: Within flooded:
+                            !         * .FALSE. = not flooded
+                            !         * .TRUE.  = flooded
+                            flooded(ix, iy) = .TRUE._INT8
                         END IF
                     END IF
                 END IF
             END DO
         END DO
-    END SUBROUTINE incrementMask
+    END SUBROUTINE incrementFlood
 
-    SUBROUTINE saveShrunkMask(nx, ny, mask, scale, bname, iname)
+    SUBROUTINE saveShrunkFlood(nx, ny, flooded, scale, bname, iname)
         ! Import modules ...
         USE ISO_FORTRAN_ENV
         USE mod_safe,       ONLY:   sub_allocate_array,                         &
@@ -64,7 +68,7 @@ MODULE mod_funcs
         ! Declare inputs/outputs ...
         INTEGER(kind = INT64), INTENT(in)                                       :: nx
         INTEGER(kind = INT64), INTENT(in)                                       :: ny
-        LOGICAL(kind = INT8), DIMENSION(nx, ny), INTENT(in)                     :: mask
+        LOGICAL(kind = INT8), DIMENSION(nx, ny), INTENT(in)                     :: flooded
         INTEGER(kind = INT64), INTENT(in)                                       :: scale
         CHARACTER(len = *), INTENT(in)                                          :: bname
         CHARACTER(len = *), INTENT(in)                                          :: iname
@@ -76,7 +80,7 @@ MODULE mod_funcs
         INTEGER(kind = INT64)                                                   :: iy
         INTEGER(kind = INT64)                                                   :: iylo
         INTEGER(kind = INT64)                                                   :: iyhi
-        REAL(kind = REAL32), ALLOCATABLE, DIMENSION(:, :)                       :: shrunkMask
+        REAL(kind = REAL32), ALLOCATABLE, DIMENSION(:, :)                       :: shrunkFlooded
 
         ! Check scale ...
         IF(MOD(nx, scale) /= 0_INT64)THEN
@@ -91,7 +95,7 @@ MODULE mod_funcs
         END IF
 
         ! Allocate array ...
-        CALL sub_allocate_array(shrunkMask, "shrunkMask", nx / scale, ny / scale, .TRUE._INT8)
+        CALL sub_allocate_array(shrunkFlooded, "shrunkFlooded", nx / scale, ny / scale, .TRUE._INT8)
 
         ! Loop over x-axis tiles ...
         DO ix = 1_INT64, nx / scale
@@ -105,25 +109,25 @@ MODULE mod_funcs
                 iylo = (iy - 1_INT64) * scale + 1_INT64
                 iyhi =  iy            * scale
 
-                ! Find average mask ...
-                ! NOTE: Within shrunkMask:
-                !         *     0.0     = pregnant women can't go here =  RED
-                !         * scale*scale = pregnant women  can  go here = GREEN
-                shrunkMask(ix, iy) = REAL(COUNT(mask(ixlo:ixhi, iylo:iyhi), kind = INT64), kind = REAL32)
+                ! Find total flood ...
+                ! NOTE: Within shrunkFlooded:
+                !         *     0.0     = not flooded = GREEN
+                !         * scale*scale =   flooded   = BLUE
+                shrunkFlooded(ix, iy) = REAL(COUNT(flooded(ixlo:ixhi, iylo:iyhi), kind = INT64), kind = REAL32)
             END DO
         END DO
 
-        ! Convert total mask to average mask ...
-        ! NOTE: Within shrunkMask:
-        !         * 0.0 = pregnant women can't go here =  RED
-        !         * 1.0 = pregnant women  can  go here = GREEN
-        shrunkMask = shrunkMask / REAL(scale * scale, kind = REAL32)
+        ! Convert total flood to average flood ...
+        ! NOTE: Within shrunkFlooded:
+        !         * 0.0 = not flooded = GREEN
+        !         * 1.0 =   flooded   = BLUE
+        shrunkFlooded = shrunkFlooded / REAL(scale * scale, kind = REAL32)
 
         ! Save shrunk mask ...
-        CALL sub_save_array_as_BIN(shrunkMask, TRIM(bname))
-        CALL sub_save_array_as_PPM(shrunkMask, TRIM(iname), "r2g")
+        CALL sub_save_array_as_BIN(shrunkFlooded, TRIM(bname))
+        CALL sub_save_array_as_PPM(shrunkFlooded, TRIM(iname), "g2b")
 
         ! Clean up ...
-        DEALLOCATE(shrunkMask)
-    END SUBROUTINE saveShrunkMask
+        DEALLOCATE(shrunkFlooded)
+    END SUBROUTINE saveShrunkFlood
 END MODULE mod_funcs
