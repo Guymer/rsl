@@ -154,11 +154,12 @@ with zipfile.ZipFile(zname, "r") as fobj0:
             # Clean up ...
             del ascObj
 
-            # Determine indexes ...
+            # Determine indexes (from the upper-left corner not the lower-left
+            # corner) ...
             ix1 = hdr["xllcorner"] // hdr["cellsize"]
             ix2 = hdr["xllcorner"] // hdr["cellsize"] + hdr["ncols"]
-            iy1 = hdr["yllcorner"] // hdr["cellsize"]
-            iy2 = hdr["yllcorner"] // hdr["cellsize"] + hdr["nrows"]
+            iy1 = ny - (hdr["yllcorner"] // hdr["cellsize"] + hdr["nrows"])
+            iy2 = ny - (hdr["yllcorner"] // hdr["cellsize"])
 
             # Populate array ...
             elev[iy1:iy2, ix1:ix2] = cont[:, :]                                 # [m]
