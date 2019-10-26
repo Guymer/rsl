@@ -15,5 +15,6 @@ __pycache__
 pylint.log
 
 # Hide large datasets ...
+*.bin
 *.out
 *.zip
