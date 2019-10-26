@@ -1,0 +1,3 @@
+[submodule "fortranlib"]
+	path = fortranlib
+	url = https://github.com/Guymer/fortranlib.git
