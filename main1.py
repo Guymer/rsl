@@ -29,14 +29,14 @@ except:
 fname0 = "terr50_cesh_gb.zip"
 
 # Compile regex to save time ...
-pat1 = re.compile(r"data/[a-z]+/[a-z]+[0-9]+_OST50CONT_[0-9]+.zip")
+pattern = re.compile(r"data/[a-z]+/[a-z]+[0-9]+_OST50CONT_[0-9]+.zip")
 
 # Load dataset ...
 with zipfile.ZipFile(fname0, "r") as fobj0:
     # Loop over members ...
     for fname1 in fobj0.namelist():
         # Skip this member if it is not a sub-dataset ...
-        if pat1.match(fname1) is None:
+        if pattern.match(fname1) is None:
             continue
 
         # Determine sub-dataset key ...
@@ -75,3 +75,12 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
                 print(shapeRecord.record)
                 print(shapeRecord.shape)
                 exit()
+
+            # Clean up ...
+            del fobj2
+            del dbf_src
+            del shp_src
+            del shx_src
+
+        # Clean up ...
+        del zip_src
