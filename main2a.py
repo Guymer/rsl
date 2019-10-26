@@ -22,8 +22,9 @@ import zipfile
 
 # Define function ...
 def loadASCIIheader(fobj):
-    # Read first five lines from ASCII dataset ...
-    lines = fobj.readlines()[:5]
+    # Read lines from ASCII dataset (and reset pointer) ...
+    lines = fobj.readlines()
+    fobj.seek(0)
 
     # Populate header ...
     header = {
@@ -33,6 +34,9 @@ def loadASCIIheader(fobj):
         "yllcorner" : int(lines[3].decode("ascii").strip().split()[1]),
          "cellsize" : int(lines[4].decode("ascii").strip().split()[1]),
     }
+
+    # Determine length of header ...
+    header["length"] = len(lines) - header["nrows"]
 
     # Clean up ...
     del lines
@@ -100,6 +104,7 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
             del gmlObj
             del prjObj
             del xmlObj
+            del hdr
 
         # Clean up ...
         del zipObj
