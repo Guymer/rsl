@@ -164,11 +164,10 @@ MODULE mod_funcs
         END DO
     END SUBROUTINE incrementFlood
 
-    SUBROUTINE saveShrunkFlood(nx, ny, flooded, scale, bname, iname)
+    SUBROUTINE saveShrunkFlood(nx, ny, flooded, scale, iname)
         ! Import modules ...
         USE ISO_FORTRAN_ENV
         USE mod_safe,       ONLY:   sub_allocate_array,                         &
-                                    sub_save_array_as_BIN,                      &
                                     sub_save_array_as_PPM
 
         IMPLICIT NONE
@@ -178,7 +177,6 @@ MODULE mod_funcs
         INTEGER(kind = INT64), INTENT(in)                                       :: ny
         LOGICAL(kind = INT8), DIMENSION(nx, ny), INTENT(in)                     :: flooded
         INTEGER(kind = INT64), INTENT(in)                                       :: scale
-        CHARACTER(len = *), INTENT(in)                                          :: bname
         CHARACTER(len = *), INTENT(in)                                          :: iname
 
         ! Declare variables ...
@@ -232,8 +230,7 @@ MODULE mod_funcs
         shrunkFlooded = shrunkFlooded / REAL(scale * scale, kind = REAL32)
 
         ! Save shrunk flood ...
-        CALL sub_save_array_as_BIN(shrunkFlooded, TRIM(bname))
-        CALL sub_save_array_as_PPM(shrunkFlooded, TRIM(iname), "g2b")
+        CALL sub_save_array_as_PPM(shrunkFlooded, iname, "g2b")
 
         ! Clean up ...
         DEALLOCATE(shrunkFlooded)

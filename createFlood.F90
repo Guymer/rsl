@@ -9,18 +9,19 @@ PROGRAM main
 
     ! Declare parameters ...
     INTEGER(kind = INT64), PARAMETER                                            :: nmax = 50_INT64
-    INTEGER(kind = INT64), PARAMETER                                            :: nmax_thread = 1000_INT64
+    INTEGER(kind = INT64), PARAMETER                                            :: nmaxThread = 1000_INT64
     INTEGER(kind = INT64), PARAMETER                                            :: nx = 13200_INT64
     INTEGER(kind = INT64), PARAMETER                                            :: ny = 24600_INT64
     INTEGER(kind = INT64), PARAMETER                                            :: imageScale = 10_INT64
     INTEGER(kind = INT64), PARAMETER                                            :: tileScale = 50_INT64
 
     ! Declare variables ...
-    CHARACTER(len = 24)                                                         :: bname
-    CHARACTER(len = 24)                                                         :: iname
+    CHARACTER(len = 21)                                                         :: cname
+    CHARACTER(len = 21)                                                         :: iname
     LOGICAL(kind = INT8), ALLOCATABLE, DIMENSION(:, :)                          :: flooded
     INTEGER(kind = INT64)                                                       :: i
-    INTEGER(kind = INT64)                                                       :: i_thread
+    INTEGER(kind = INT64)                                                       :: iSeaLevel
+    INTEGER(kind = INT64)                                                       :: iThread
     INTEGER(kind = INT64)                                                       :: ix
     INTEGER(kind = INT64)                                                       :: ixlo
     INTEGER(kind = INT64)                                                       :: ixhi
@@ -28,9 +29,9 @@ PROGRAM main
     INTEGER(kind = INT64)                                                       :: iylo
     INTEGER(kind = INT64)                                                       :: iyhi
     INTEGER(kind = INT64)                                                       :: newtot
-    INTEGER(kind = INT64)                                                       :: newtot_thread
+    INTEGER(kind = INT64)                                                       :: newtotThread
     INTEGER(kind = INT64)                                                       :: oldtot
-    INTEGER(kind = INT64)                                                       :: oldtot_thread
+    INTEGER(kind = INT64)                                                       :: oldtotThread
     REAL(kind = REAL32)                                                         :: seaLevel
     REAL(kind = REAL32), ALLOCATABLE, DIMENSION(:, :)                           :: elev
 
@@ -74,113 +75,120 @@ PROGRAM main
     ! Flood the top-left corner ...
     flooded(1, 1) = .TRUE._INT8
 
-    ! Set sea level ...
-    seaLevel = 0.0e0_REAL32                                                     ! [m]
-
-    ! Open CSV ...
-    OPEN(action = "write", file = "createFlood.csv", form = "formatted", iomsg = errmsg, iostat = errnum, newunit = funit, status = "replace")
-    IF(errnum /= 0_INT32)THEN
-        WRITE(fmt = '("ERROR: ", a, ". ERRMSG = ", a, ". ERRNUM = ", i3, ".")', unit = ERROR_UNIT) "Failed to open BIN", TRIM(errmsg), errnum
-        FLUSH(unit = ERROR_UNIT)
-        STOP
-    END IF
-
-    ! Write header ...
-    WRITE(fmt = '(a)', unit = funit) "step,pixels flooded"
-    FLUSH(unit = funit)
-
-    ! Start ~infinite loop ...
-    DO i = 1_INT64, nmax
+    ! Loop over sea levels ...
+    DO iSeaLevel = 0_INT64, NINT(MAXVAL(elev), kind = INT64), 400_INT64
         ! Print progress ...
-        WRITE(fmt = '("Calculating step ", i4, " of (up to) ", i4, " ...")', unit = OUTPUT_UNIT) i, nmax
+        WRITE(fmt = '("Calculating a sea level rise of ", i4, "m ...")', unit = OUTPUT_UNIT) iSeaLevel
         FLUSH(unit = OUTPUT_UNIT)
 
+        ! Set sea level ...
+        seaLevel = REAL(iSeaLevel, kind = REAL32)                               ! [m]
+
         ! Create file names ...
-        WRITE(bname, '("createFlood_step", i4.4, ".bin")') i
-        WRITE(iname, '("createFlood_step", i4.4, ".ppm")') i
+        WRITE(cname, '("createFlood_", i4.4, "m.csv")') iSeaLevel
+        WRITE(iname, '("createFlood_", i4.4, "m.ppm")') iSeaLevel
 
-        ! Find initial total ...
-        oldtot = COUNT(flooded, kind = INT64)
+        ! Open CSV ...
+        OPEN(action = "write", file = cname, form = "formatted", iomsg = errmsg, iostat = errnum, newunit = funit, status = "replace")
+        IF(errnum /= 0_INT32)THEN
+            WRITE(fmt = '("ERROR: ", a, ". ERRMSG = ", a, ". ERRNUM = ", i3, ".")', unit = ERROR_UNIT) "Failed to open BIN", TRIM(errmsg), errnum
+            FLUSH(unit = ERROR_UNIT)
+            STOP
+        END IF
 
-        ! Increment flood (of the UK) ...
-        CALL incrementFlood(nx, ny, elev, seaLevel, flooded, 1_INT64, nx, 1_INT64, ny)
-
-        !$omp parallel                                                          &
-        !$omp default(none)                                                     &
-        !$omp private(i_thread)                                                 &
-        !$omp private(ix)                                                       &
-        !$omp private(ixlo)                                                     &
-        !$omp private(ixhi)                                                     &
-        !$omp private(iy)                                                       &
-        !$omp private(iylo)                                                     &
-        !$omp private(iyhi)                                                     &
-        !$omp private(oldtot_thread)                                            &
-        !$omp private(newtot_thread)                                            &
-        !$omp shared(elev)                                                      &
-        !$omp shared(flooded)                                                   &
-        !$omp shared(seaLevel)
-            !$omp do                                                            &
-            !$omp schedule(dynamic)
-                ! Loop over x-axis tiles ...
-                DO ix = 1_INT64, nx / tileScale
-                    ! Find the extent of the tile ...
-                    ixlo = (ix - 1_INT64) * tileScale + 1_INT64
-                    ixhi =  ix            * tileScale
-
-                    ! Loop over y-axis tiles ...
-                    DO iy = 1_INT64, ny / tileScale
-                        ! Find the extent of the tile ...
-                        iylo = (iy - 1_INT64) * tileScale + 1_INT64
-                        iyhi =  iy            * tileScale
-
-                        ! Start ~infinite loop ...
-                        DO i_thread = 1_INT64, nmax_thread
-                            ! Find initial total ...
-                            oldtot_thread = COUNT(flooded(ixlo:ixhi, iylo:iyhi), kind = INT64)
-
-                            ! Stop looping once no changes can be made ...
-                            IF(oldtot_thread == 0_INT64 .OR. oldtot_thread == tileScale ** 2)THEN
-                                EXIT
-                            END IF
-
-                            ! Increment flood (of the tile) ...
-                            CALL incrementFlood(nx, ny, elev, seaLevel, flooded, ixlo, ixhi, iylo, iyhi)
-
-                            ! Find new total ...
-                            newtot_thread = COUNT(flooded(ixlo:ixhi, iylo:iyhi), kind = INT64)
-
-                            ! Stop looping once no changes have been made ...
-                            IF(newtot_thread == oldtot_thread)THEN
-                                EXIT
-                            END IF
-                        END DO
-                    END DO
-                END DO
-            !$omp end do
-        !$omp end parallel
-
-        ! Find new total ...
-        newtot = COUNT(flooded, kind = INT64)
-
-        ! Write progress ...
-        WRITE(fmt = '(i2, ",", i9)', unit = funit) i, newtot
+        ! Write header ...
+        WRITE(fmt = '(a)', unit = funit) "step,pixels flooded"
         FLUSH(unit = funit)
 
-        ! Stop looping once no changes have been made ...
-        IF(newtot == oldtot)THEN
-            EXIT
-        END IF
+        ! Start ~infinite loop ...
+        DO i = 1_INT64, nmax
+            ! Print progress ...
+            WRITE(fmt = '("    Calculating step ", i4, " of (up to) ", i4, " ...")', unit = OUTPUT_UNIT) i, nmax
+            FLUSH(unit = OUTPUT_UNIT)
+
+            ! Find initial total ...
+            oldtot = COUNT(flooded, kind = INT64)
+
+            ! Increment flood (of GB) ...
+            CALL incrementFlood(nx, ny, elev, seaLevel, flooded, 1_INT64, nx, 1_INT64, ny)
+
+            !$omp parallel                                                      &
+            !$omp default(none)                                                 &
+            !$omp private(iThread)                                              &
+            !$omp private(ix)                                                   &
+            !$omp private(ixlo)                                                 &
+            !$omp private(ixhi)                                                 &
+            !$omp private(iy)                                                   &
+            !$omp private(iylo)                                                 &
+            !$omp private(iyhi)                                                 &
+            !$omp private(oldtotThread)                                         &
+            !$omp private(newtotThread)                                         &
+            !$omp shared(elev)                                                  &
+            !$omp shared(flooded)                                               &
+            !$omp shared(seaLevel)
+                !$omp do                                                        &
+                !$omp schedule(dynamic)
+                    ! Loop over x-axis tiles ...
+                    DO ix = 1_INT64, nx / tileScale
+                        ! Find the extent of the tile ...
+                        ixlo = (ix - 1_INT64) * tileScale + 1_INT64
+                        ixhi =  ix            * tileScale
+
+                        ! Loop over y-axis tiles ...
+                        DO iy = 1_INT64, ny / tileScale
+                            ! Find the extent of the tile ...
+                            iylo = (iy - 1_INT64) * tileScale + 1_INT64
+                            iyhi =  iy            * tileScale
+
+                            ! Start ~infinite loop ...
+                            DO iThread = 1_INT64, nmaxThread
+                                ! Find initial total ...
+                                oldtotThread = COUNT(flooded(ixlo:ixhi, iylo:iyhi), kind = INT64)
+
+                                ! Stop looping once no more flooding can occur ...
+                                IF(oldtotThread == 0_INT64 .OR. oldtotThread == tileScale ** 2)THEN
+                                    EXIT
+                                END IF
+
+                                ! Increment flood (of the tile) ...
+                                CALL incrementFlood(nx, ny, elev, seaLevel, flooded, ixlo, ixhi, iylo, iyhi)
+
+                                ! Find new total ...
+                                newtotThread = COUNT(flooded(ixlo:ixhi, iylo:iyhi), kind = INT64)
+
+                                ! Stop looping once no more flooding has occured ...
+                                IF(newtotThread == oldtotThread)THEN
+                                    EXIT
+                                END IF
+                            END DO
+                        END DO
+                    END DO
+                !$omp end do
+            !$omp end parallel
+
+            ! Find new total ...
+            newtot = COUNT(flooded, kind = INT64)
+
+            ! Write progress ...
+            WRITE(fmt = '(i2, ",", i9)', unit = funit) i, newtot
+            FLUSH(unit = funit)
+
+            ! Stop looping once no more flooding has occured ...
+            IF(newtot == oldtot)THEN
+                EXIT
+            END IF
+        END DO
+
+        ! Close CSV ...
+        CLOSE(unit = funit)
+
+        ! Print progress ...
+        WRITE(fmt = '("    Saving final answer ...")', unit = OUTPUT_UNIT)
+        FLUSH(unit = OUTPUT_UNIT)
+
+        ! Save shrunk final flood ...
+        CALL saveShrunkFlood(nx, ny, flooded, imageScale, iname)
     END DO
-
-    ! Close CSV ...
-    CLOSE(unit = funit)
-
-    ! Print progress ...
-    WRITE(fmt = '("Saving final answer ...")', unit = OUTPUT_UNIT)
-    FLUSH(unit = OUTPUT_UNIT)
-
-    ! Save shrunk final flood ...
-    CALL saveShrunkFlood(nx, ny, flooded, imageScale, bname, iname)
 
     ! Clean up ...
     DEALLOCATE(elev)
