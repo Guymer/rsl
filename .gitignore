@@ -24,6 +24,7 @@ pylint.log
 *.csv
 *.out
 *.pbm
+*.pgm
 *.ppm
 *.zip
 terr50_cesh_gb.*
