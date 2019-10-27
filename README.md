@@ -10,7 +10,7 @@ This project aims to map the effects of rising sea levels on Great Britain.
 4. Create an elevation map of Great Britain (by running [convertBINtoPPM](convertBINtoPPM.F90))
 5. Flood Great Britain (by running [createFlood](createFlood.F90))
 6. Convert all generated PPM images to PNG images (by running [convertPPMtoPNG.sh](convertPPMtoPNG.sh))
-7. Convert the sequence of PPM images to a GIF animation (by running `convert createFlood_????m.png createFlood.gif`)
+7. Convert the sequence of PPM images to a GIF animation (by running [convertPNGtoGIF.py](convertPNGtoGIF.py))
 
 ## Method
 
@@ -21,6 +21,8 @@ The method that is used here has been stolen from [Where Can Pregnant Women Go? 
 RSL requires the following Python modules to be installed and available in your `PYTHONPATH`.
 
 * [numpy](https://pypi.org/project/numpy)
+* [PIL](https://pypi.org/project/Pillow)
+* [pyguymer3](https://github.com/Guymer/PyGuymer3)
 
 ## To Do
 
