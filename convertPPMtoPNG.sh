@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Loop over PPM images ...
-for ppm in *.ppm; do
+for ppm in createFlood_*.ppm; do
     # Skip those that do not exist ...
     [[ ! -f $ppm ]] && continue
 
@@ -12,8 +12,22 @@ for ppm in *.ppm; do
     if [[ $ppm -nt $png ]]; then
         echo "Making \"$png\" ..."
 
-        convert $ppm $png
+        # Extract sea level from file name and make title ...
+        str="${ppm%.ppm}"
+        str="${str#createFlood_}"
+        str="${str:0:1},${str:1:5} sea level rise"
+
+        # Make PNG ...
+        convert $ppm -gravity north -stroke none -fill white -font Courier -pointsize 72 -annotate 0 "$str" $png
         exiftool -overwrite_original -all= $png
         optipng $png
+    fi
+
+    # Check if the PPM needs removing ...
+    if [[ -f $png ]]; then
+        echo "Removing \"$ppm\" ..."
+
+        # Remove PPM ...
+        rm $ppm
     fi
 done
