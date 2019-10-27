@@ -76,7 +76,7 @@ PROGRAM main
     flooded(1, 1) = .TRUE._INT8
 
     ! Loop over sea levels ...
-    DO iSeaLevel = 0_INT64, NINT(MAXVAL(elev), kind = INT64), 400_INT64
+    DO iSeaLevel = 0_INT64, NINT(MAXVAL(elev), kind = INT64), 1_INT64
         ! Print progress ...
         WRITE(fmt = '("Calculating a sea level rise of ", i4, "m ...")', unit = OUTPUT_UNIT) iSeaLevel
         FLUSH(unit = OUTPUT_UNIT)
