@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+# Convert dataset map ...
+ppm="terr50_gagg_gb.ppm"
+png="terr50_gagg_gb.png"
+if [[ -f $ppm ]]; then
+    if [[ $ppm -nt $png ]]; then
+        echo "Making \"$png\" ..."
+        convert $ppm $png
+        exiftool -overwrite_original -all= $png
+        optipng $png
+        rm $ppm
+    fi
+fi
+
 # Loop over PPM images ...
 for ppm in createFlood_*.ppm; do
     # Skip those that do not exist ...
