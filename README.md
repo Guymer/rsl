@@ -25,3 +25,9 @@ RSL requires the following Python modules to be installed and available in your 
 ## To Do
 
 * Obviously, the [compile.sh](compile.sh) needs to be replaced by a real Makefile at some point.
+
+## Bugs
+
+* If you look at the image with a sea level of 0m (shown below) then you will notice that there are some large lakes in East Anglia that are not there in real life. In real life they are below sea level, with [Holme Fen](https://en.wikipedia.org/wiki/Holme_Fen) being the lowest point in GB. However, in real life there are numerous dykes that keep the sea out so that these low-lying areas are not flooded. [The "OS Terrain 50" dataset](https://www.ordnancesurvey.co.uk/business-and-government/products/terrain-50.html) is gridded on 50m by 50m pixels, therefore, I conclude that the reason why I am incorrectly flooding these areas with a sea level of 0m is because the dykes that keep the water out are less than 50m by 50m in real life.
+
+![GB with a sea level of 0m](bug.png)
