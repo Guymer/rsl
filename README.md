@@ -6,7 +6,7 @@ This project aims to map the effects of rising sea levels on Great Britain.
 
 1. Download for yourself [the "OS Terrain 50" dataset](https://www.ordnancesurvey.co.uk/business-and-government/products/terrain-50.html), in the "ASCII Grid and GML (Grid)" file format, from the Ordnance Survey to provide the "terr50_gagg_gb.zip" file that is used here
 2. Convert the ZIP file of [the "OS Terrain 50" dataset](https://www.ordnancesurvey.co.uk/business-and-government/products/terrain-50.html) to a BIN file (by running [convertZIPtoBIN.py](convertZIPtoBIN.py))
-3. Compile the FORTRAN programs (by running [compile.sh](compile.sh))
+3. Compile the FORTRAN programs (by running [Makefile](Makefile))
 4. Create an elevation map of Great Britain (by running [convertBINtoPPM](convertBINtoPPM.F90))
 5. Flood Great Britain (by running [createFlood](createFlood.F90))
 6. Convert all generated PPM images to PNG images (by running [convertPPMtoPNG.sh](convertPPMtoPNG.sh))
@@ -23,10 +23,6 @@ RSL requires the following Python modules to be installed and available in your 
 * [numpy](https://pypi.org/project/numpy)
 * [PIL](https://pypi.org/project/Pillow)
 * [pyguymer3](https://github.com/Guymer/PyGuymer3)
-
-## To Do
-
-* Obviously, the [compile.sh](compile.sh) needs to be replaced by a real Makefile at some point.
 
 ## Bugs
 
