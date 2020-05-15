@@ -15,6 +15,7 @@
 # Import standard modules ...
 import io
 import re
+import sys
 import zipfile
 
 # Import special modules ...
@@ -74,7 +75,7 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
 
                 print(shapeRecord.record)
                 print(shapeRecord.shape)
-                exit()
+                sys.exit()
 
             # Clean up ...
             del fobj2
