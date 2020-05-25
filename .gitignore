@@ -9,15 +9,17 @@ ehthumbs.db
 Thumbs.db
 
 # Hide compiled code ...
-*.mod
-*.o
 __pycache__
-convertBINtoPPM
-createFlood
-createFlood_*.png
 
 # Hide output of Pylint ...
 pylint.log
+
+# Ignore compiler generated files ...
+*.mod
+*.so
+*.so.dSYM
+convertBINtoPPM
+createFlood
 
 # Hide large datasets ...
 *.bin
@@ -30,3 +32,6 @@ pylint.log
 *.zip
 terr50_cesh_gb.*
 terr50_gagg_gb.*
+
+# Hide intermediary output files ...
+createFlood_*.png
