@@ -16,6 +16,7 @@ pylint.log
 
 # Ignore compiler generated files ...
 *.mod
+*.o
 *.so
 *.so.dSYM
 convertBINtoPPM
