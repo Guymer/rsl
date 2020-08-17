@@ -30,8 +30,7 @@ for frame in sorted(glob.glob("createFlood_0[0-4][0-9][0-9]m.png")):
 
 # Save GIF ...
 images[0].save("createFlood.gif", save_all = True, append_images = images[1:], duration = 40, loop = 0)
-pyguymer3.exiftool("createFlood.gif")
-pyguymer3.gifsicle("createFlood.gif")
+pyguymer3.optimize_image("createFlood.gif", strip = True)
 
 # ******************************************************************************
 
@@ -58,5 +57,4 @@ for width in widths:
 
     # Save GIF ...
     images[0].save("createFlood{:04d}px.gif".format(width), save_all = True, append_images = images[1:], duration = 40, loop = 0)
-    pyguymer3.exiftool("createFlood{:04d}px.gif".format(width))
-    pyguymer3.gifsicle("createFlood{:04d}px.gif".format(width))
+    pyguymer3.optimize_image("createFlood{:04d}px.gif".format(width), strip = True)
