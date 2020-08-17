@@ -7,8 +7,8 @@ if [[ -f $ppm ]]; then
     if [[ $ppm -nt $png ]]; then
         echo "Making \"$png\" ..."
         convert $ppm $png
-        exiftool -overwrite_original -all= $png
         optipng $png
+        exiftool -overwrite_original -all= $png
         rm $ppm
     fi
 fi
@@ -32,8 +32,8 @@ for ppm in createFlood_*.ppm; do
 
         # Make PNG ...
         convert $ppm -gravity north -stroke none -fill white -font Courier -pointsize 72 -annotate 0 "$str" $png
-        exiftool -overwrite_original -all= $png
         optipng $png
+        exiftool -overwrite_original -all= $png
     fi
 
     # Check if the PPM needs removing ...
