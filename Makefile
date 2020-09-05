@@ -12,7 +12,7 @@ FTNLIB ?= fortranlib
 
 # Set compiler flags ...
 DEBG_OPTS := -g -fcheck=all
-LANG_OPTS := -ffree-form -ffree-line-length-none -frecursive -fno-unsafe-math-optimizations -frounding-math -fsignaling-nans
+LANG_OPTS := -ffree-form -ffree-line-length-none -frecursive -fno-unsafe-math-optimizations -frounding-math -fsignaling-nans -fPIC
 WARN_OPTS := -Wall -Wextra -Waliasing -Wcharacter-truncation -Wconversion-extra -Wimplicit-interface -Wimplicit-procedure -Wunderflow -Wtabs
 OPTM_OPTS := -O2
 MACH_OPTS := -march=native -m64
@@ -31,7 +31,7 @@ all:				compile
 # "gmake clean"   = removes the compiled code
 clean:				$(RM)
 	$(RM) -f convertBINtoPPM createFlood *.mod *.o
-	$(MAKE) -C $(FTNLIB) clean
+	$(MAKE) -r -C $(FTNLIB) clean
 
 # "gmake compile" = compiles the code
 compile:			mod_funcs.o													\
@@ -61,7 +61,7 @@ help:				$(EGREP)													\
 $(FTNLIB)/%.mod																	\
 $(FTNLIB)/%.o:		$(FTNLIB)/Makefile											\
 					$(FTNLIB)/%.F90
-	$(MAKE) -C $(FTNLIB) DEBUG=$(DEBUG) $*.o
+	$(MAKE) -r -C $(FTNLIB) DEBUG=$(DEBUG) $*.o
 
 mod_funcs.mod																	\
 mod_funcs.o:		$(FC)														\
