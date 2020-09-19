@@ -1,8 +1,8 @@
 # Find executables ...
-CUT   := $(shell which cut    2> /dev/null || echo "ERROR")
-EGREP := $(shell which egrep  2> /dev/null || echo "ERROR")
-FC    := $(shell which mpif90 2> /dev/null || echo "ERROR")
-RM    := $(shell which rm     2> /dev/null || echo "ERROR")
+CUT  := $(shell which cut    2> /dev/null || echo "ERROR")
+FC   := $(shell which mpif90 2> /dev/null || echo "ERROR")
+GREP := $(shell which grep   2> /dev/null || echo "ERROR")
+RM   := $(shell which rm     2> /dev/null || echo "ERROR")
 
 # Set defaults ...
 DEBUG  ?= false
@@ -23,6 +23,25 @@ ifeq ($(DEBUG), true)
 	LANG_OPTS += $(DEBG_OPTS)
 endif
 
+# Check binaries ...
+ifeq ($(CUT),ERROR)
+    $(error The binary "cut" is not installed)
+endif
+ifeq ($(FC),ERROR)
+    $(error The binary "fc" is not installed)
+endif
+ifeq ($(GREP),ERROR)
+    $(error The binary "grep" is not installed)
+endif
+ifeq ($(RM),ERROR)
+    $(error The binary "rm" is not installed)
+endif
+
+# Check Python modules ...
+# ifneq ($(shell $(PYTHON3) -c "import numpy; print(0)" 2> /dev/null),0)
+    # $(error The Python module "numpy" is not installed)
+# endif
+
 # ******************************************************************************
 
 # "gmake [all]"   = "make compile" (default)
@@ -39,10 +58,10 @@ compile:			mod_funcs.o													\
 					createFlood
 
 # "gmake help"    = print this help
-help:				$(EGREP)													\
+help:				$(GREP)														\
 					$(CUT)
 	echo "These are the available options:"
-	$(EGREP) "^# \"gmake " Makefile | $(CUT) -c 2-
+	$(GREP) -E "^# \"gmake " Makefile | $(CUT) -c 2-
 
 # ******************************************************************************
 
