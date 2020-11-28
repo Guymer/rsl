@@ -7,7 +7,7 @@ import glob
 try:
     import PIL.Image
 except:
-    raise Exception("\"PIL\" is not installed; run \"pip install --user Pillow\"")
+    raise Exception("\"PIL\" is not installed; run \"pip install --user Pillow\"") from None
 
 # Import my modules ...
 try:

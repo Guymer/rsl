@@ -21,11 +21,11 @@ import zipfile
 try:
     import cartopy
 except:
-    raise Exception("run \"pip install --user cartopy\"")
+    raise Exception("\"cartopy\" is not installed; run \"pip install --user Cartopy\"") from None
 try:
     import shapefile
 except:
-    raise Exception("run \"pip install --user pyshp\"")
+    raise Exception("\"pyshp\" is not installed; run \"pip install --user pyshp\"") from None
 
 # ******************************************************************************
 # *                     PART 1: FIND OUT HOW BIG THE UK IS                     *
@@ -105,7 +105,7 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
                 # NOTE: The shapefile is only supposed to contain contours
                 #       and tide marks.
                 if shapeRecord.shape.shapeType != shapefile.POLYLINE:
-                    raise Exception("shape is not a POLYLINE")
+                    raise Exception("shape is not a POLYLINE") from None
 
                 # Skip this shape+record if it is not a contour ...
                 # NOTE: It is probably a tide mark.
