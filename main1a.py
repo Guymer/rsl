@@ -22,7 +22,7 @@ import zipfile
 try:
     import shapefile
 except:
-    raise Exception("\"pyshp\" is not installed; run \"pip install --user pyshp\"") from None
+    raise Exception("\"shapefile\" is not installed; run \"pip install --user pyshp\"") from None
 
 # NOTE: https://scitools.org.uk/cartopy/docs/latest/crs/projections.html#osgb
 

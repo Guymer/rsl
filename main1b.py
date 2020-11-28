@@ -25,7 +25,7 @@ except:
 try:
     import shapefile
 except:
-    raise Exception("\"pyshp\" is not installed; run \"pip install --user pyshp\"") from None
+    raise Exception("\"shapefile\" is not installed; run \"pip install --user pyshp\"") from None
 
 # ******************************************************************************
 # *                     PART 1: FIND OUT HOW BIG THE UK IS                     *
