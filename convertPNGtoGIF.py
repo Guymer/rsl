@@ -15,6 +15,9 @@ try:
 except:
     raise Exception("\"pyguymer3\" is not installed; you need to have the Python module from https://github.com/Guymer/PyGuymer3 located somewhere in your $PYTHONPATH") from None
 
+# Configure PIL to open images up to 1 GiP ...
+PIL.Image.MAX_IMAGE_PIXELS = 1024 * 1024 * 1024                                 # [px]
+
 # ******************************************************************************
 
 # Initizalize list ...
@@ -31,6 +34,11 @@ for frame in sorted(glob.glob("createFlood_0[0-4][0-9][0-9]m.png")):
 # Save GIF ...
 images[0].save("createFlood.gif", save_all = True, append_images = images[1:], duration = 40, loop = 0)
 pyguymer3.optimize_image("createFlood.gif", strip = True)
+
+# Clean up ...
+for image in images:
+    image.close()
+del images
 
 # ******************************************************************************
 
@@ -58,3 +66,8 @@ for width in widths:
     # Save GIF ...
     images[0].save("createFlood{:04d}px.gif".format(width), save_all = True, append_images = images[1:], duration = 40, loop = 0)
     pyguymer3.optimize_image("createFlood{:04d}px.gif".format(width), strip = True)
+
+    # Clean up ...
+    for image in images:
+        image.close()
+    del images
