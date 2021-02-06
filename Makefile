@@ -7,6 +7,7 @@ RM   := $(shell which rm     2> /dev/null || echo "ERROR")
 # Set defaults ...
 DEBUG  ?= false
 FTNLIB ?= fortranlib
+LIBDIR ?= /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib
 
 # ******************************************************************************
 
@@ -102,10 +103,10 @@ createFlood.o:		$(FC)														\
 convertBINtoPPM:	$(FC)														\
 					$(FTNLIB)/mod_safe.o										\
 					convertBINtoPPM.o
-	$(FC) $(LANG_OPTS) $(WARN_OPTS) $(OPTM_OPTS) $(MACH_OPTS) convertBINtoPPM.o $(FTNLIB)/mod_safe.o -L/usr/lib -o $@
+	$(FC) $(LANG_OPTS) $(WARN_OPTS) $(OPTM_OPTS) $(MACH_OPTS) convertBINtoPPM.o $(FTNLIB)/mod_safe.o -L$(LIBDIR) -o $@
 
 createFlood:		$(FC)														\
 					$(FTNLIB)/mod_safe.o										\
 					mod_funcs.o													\
 					createFlood.o
-	$(FC) -fopenmp $(LANG_OPTS) $(WARN_OPTS) $(OPTM_OPTS) $(MACH_OPTS) createFlood.o $(FTNLIB)/mod_safe.o mod_funcs.o -L/usr/lib -o $@
+	$(FC) -fopenmp $(LANG_OPTS) $(WARN_OPTS) $(OPTM_OPTS) $(MACH_OPTS) createFlood.o $(FTNLIB)/mod_safe.o mod_funcs.o -L$(LIBDIR) -o $@
