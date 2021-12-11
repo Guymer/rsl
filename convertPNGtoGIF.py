@@ -44,12 +44,12 @@ del images
 
 # ******************************************************************************
 
-# Set widths ...
-# NOTE: By inspection, the PNG frames are 1320 wide.
-widths = [512, 1024]                                                            # [px]
+# Set heights ...
+# NOTE: By inspection, the PNG frames are 2460px tall.
+heights = [512, 1024, 2048]                                                     # [px]
 
-# Loop over widths ...
-for width in widths:
+# Loop over heights ...
+for height in heights:
     # Initizalize list ...
     images = []
 
@@ -58,16 +58,16 @@ for width in widths:
         # Open image as RGB (even if it is paletted) ...
         image = PIL.Image.open(frame).convert("RGB")
 
-        # Calculate height ...
+        # Calculate width ...
         ratio = float(image.size[0]) / float(image.size[1])                     # [px/px]
-        height = round(float(width) / ratio)                                    # [px]
+        width = round(ratio * float(height))                                    # [px]
 
         # Downscale the image and append it to the list ...
         images.append(image.resize((width, height), resample = PIL.Image.LANCZOS))
 
     # Save 25fps GIF ...
-    images[0].save("createFlood{:04d}px.gif".format(width), save_all = True, append_images = images[1:], duration = 40, loop = 0)
-    pyguymer3.image.optimize_image("createFlood{:04d}px.gif".format(width), strip = True)
+    images[0].save(f"createFlood{height:04d}px.gif", save_all = True, append_images = images[1:], duration = 40, loop = 0)
+    pyguymer3.image.optimize_image(f"createFlood{height:04d}px.gif", strip = True)
 
     # Clean up ...
     for image in images:
