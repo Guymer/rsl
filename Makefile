@@ -1,8 +1,8 @@
 # Find executables ...
-CUT  := $(shell which cut    2> /dev/null || echo "ERROR")
-FC   := $(shell which mpif90 2> /dev/null || echo "ERROR")
-GREP := $(shell which grep   2> /dev/null || echo "ERROR")
-RM   := $(shell which rm     2> /dev/null || echo "ERROR")
+CUT  := $(shell which cut               2> /dev/null || echo "ERROR")
+FC   := $(shell which gfortran-mp-devel 2> /dev/null || echo "ERROR")
+GREP := $(shell which grep              2> /dev/null || echo "ERROR")
+RM   := $(shell which rm                2> /dev/null || echo "ERROR")
 
 # Set defaults ...
 DEBUG  ?= false
@@ -45,24 +45,24 @@ endif
 
 # ******************************************************************************
 
-# "gmake [all]"   = "make compile" (default)
+# "gmake -r [all]"   = "make compile" (default)
 all:				compile
 
-# "gmake clean"   = removes the compiled code
-clean:				$(RM)
+# "gmake -r clean"   = removes the compiled code
+clean:				$(RM)														\
+					$(FC)
 	$(RM) -f convertBINtoPPM createFlood *.mod *.o
-	$(MAKE) -r -C $(FTNLIB) clean
+	$(MAKE) -r -C $(FTNLIB) FC=$(FC) clean
 
-# "gmake compile" = compiles the code
-compile:			mod_funcs.o													\
-					convertBINtoPPM												\
+# "gmake -r compile" = compiles the code
+compile:			convertBINtoPPM												\
 					createFlood
 
-# "gmake help"    = print this help
+# "gmake -r help"    = print this help
 help:				$(GREP)														\
 					$(CUT)
 	echo "These are the available options:"
-	$(GREP) -E "^# \"gmake " Makefile | $(CUT) -c 2-
+	$(GREP) -E "^# \"gmake -r " Makefile | $(CUT) -c 2-
 
 # ******************************************************************************
 
@@ -79,33 +79,40 @@ help:				$(GREP)														\
 #         * https://stackoverflow.com/a/58081934
 
 $(FTNLIB)/%.mod																	\
-$(FTNLIB)/%.o:		$(FTNLIB)/Makefile											\
+$(FTNLIB)/%.o:		$(FC)														\
+					Makefile													\
+					$(FTNLIB)/Makefile											\
 					$(FTNLIB)/%.F90
-	$(MAKE) -r -C $(FTNLIB) DEBUG=$(DEBUG) $*.o
+	$(MAKE) -r -C $(FTNLIB) DEBUG=$(DEBUG) FC=$(FC) $*.o
 
 mod_funcs.mod																	\
 mod_funcs.o:		$(FC)														\
+					Makefile													\
 					$(FTNLIB)/mod_safe.mod										\
 					mod_funcs.F90
 	$(FC) -c $(LANG_OPTS) $(WARN_OPTS) $(OPTM_OPTS) $(MACH_OPTS) -I$(FTNLIB) mod_funcs.F90
 
 convertBINtoPPM.o:	$(FC)														\
+					Makefile													\
 					$(FTNLIB)/mod_safe.mod										\
 					convertBINtoPPM.F90
 	$(FC) -c $(LANG_OPTS) $(WARN_OPTS) $(OPTM_OPTS) $(MACH_OPTS) -I$(FTNLIB) convertBINtoPPM.F90 -o $@
 
 createFlood.o:		$(FC)														\
+					Makefile													\
 					$(FTNLIB)/mod_safe.mod										\
 					mod_funcs.mod												\
 					createFlood.F90
 	$(FC) -c -fopenmp $(LANG_OPTS) $(WARN_OPTS) $(OPTM_OPTS) $(MACH_OPTS) -I$(FTNLIB) createFlood.F90 -o $@
 
 convertBINtoPPM:	$(FC)														\
+					Makefile													\
 					$(FTNLIB)/mod_safe.o										\
 					convertBINtoPPM.o
 	$(FC) $(LANG_OPTS) $(WARN_OPTS) $(OPTM_OPTS) $(MACH_OPTS) convertBINtoPPM.o $(FTNLIB)/mod_safe.o -L$(LIBDIR) -o $@
 
 createFlood:		$(FC)														\
+					Makefile													\
 					$(FTNLIB)/mod_safe.o										\
 					mod_funcs.o													\
 					createFlood.o
