@@ -26,11 +26,11 @@ createFlood
 # Hide large datasets ...
 *.bin
 *.csv
-*.gif
 *.out
 *.pbm
 *.pgm
 *.ppm
+*.webp
 *.zip
 terr50_cesh_gb.*
 terr50_gagg_gb.*
