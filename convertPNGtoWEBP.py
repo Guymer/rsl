@@ -59,7 +59,7 @@ for height in heights:
         width = round(ratio * float(height))                                    # [px]
 
         # Downscale the image and append it to the list ...
-        images.append(image.resize((width, height), resample = PIL.Image.LANCZOS))
+        images.append(image.resize((width, height), resample = PIL.Image.Resampling.LANCZOS))
 
     # Save 25fps WEBP ...
     images[0].save(f"createFlood{height:04d}px.webp", lossless = True, quality = 100, method = 6, save_all = True, append_images = images[1:], duration = 40, loop = 0, minimize_size = True)
