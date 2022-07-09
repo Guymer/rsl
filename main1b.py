@@ -92,9 +92,9 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
         with zipfile.ZipFile(zipObj, "r") as fobj1:
             # Read files into RAM so that they become seekable ...
             # NOTE: https://stackoverflow.com/a/12025492
-            dbfObj = io.BytesIO(fobj1.read(key + "_line.dbf"))
-            shpObj = io.BytesIO(fobj1.read(key + "_line.shp"))
-            shxObj = io.BytesIO(fobj1.read(key + "_line.shx"))
+            dbfObj = io.BytesIO(fobj1.read(f"{key}_line.dbf"))
+            shpObj = io.BytesIO(fobj1.read(f"{key}_line.shp"))
+            shxObj = io.BytesIO(fobj1.read(f"{key}_line.shx"))
 
             # Open shapefile ...
             fobj2 = shapefile.Reader(dbf = dbfObj, shp = shpObj, shx = shxObj)

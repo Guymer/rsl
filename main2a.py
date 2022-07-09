@@ -75,11 +75,11 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
         with zipfile.ZipFile(zipObj, "r") as fobj1:
             # Read files into RAM so that they become seekable ...
             # NOTE: https://stackoverflow.com/a/12025492
-            ascObj = io.BytesIO(fobj1.read(key + ".asc"))
-            auxObj = io.BytesIO(fobj1.read(key + ".asc.aux.xml"))
-            gmlObj = io.BytesIO(fobj1.read(key + ".gml"))
-            prjObj = io.BytesIO(fobj1.read(key + ".prj"))
-            xmlObj = io.BytesIO(fobj1.read("Metadata_" + key + ".xml"))
+            ascObj = io.BytesIO(fobj1.read(f"{key}.asc"))
+            auxObj = io.BytesIO(fobj1.read(f"{key}.asc.aux.xml"))
+            gmlObj = io.BytesIO(fobj1.read(f"{key}.gml"))
+            prjObj = io.BytesIO(fobj1.read(f"{key}.prj"))
+            xmlObj = io.BytesIO(fobj1.read(f"Metadata_{key}.xml"))
 
             # Load header of ASCII dataset ...
             hdr = loadASCIIheader(ascObj)
@@ -91,11 +91,11 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
             minY = min(minY, hdr["yllcorner"] // hdr["cellsize"])
 
             # # Save a copy of the files locally for inspection ...
-            # open(key + ".asc", "wb").write(ascObj.read())
-            # open(key + ".asc.aux.xml", "wb").write(auxObj.read())
-            # open(key + ".gml", "wb").write(gmlObj.read())
-            # open(key + ".prj", "wb").write(prjObj.read())
-            # open("Metadata_" + key + ".xml", "wb").write(xmlObj.read())
+            # open(f"{key}.asc", "wb").write(ascObj.read())
+            # open(f"{key}.asc.aux.xml", "wb").write(auxObj.read())
+            # open(f"{key}.gml", "wb").write(gmlObj.read())
+            # open(f"{key}.prj", "wb").write(prjObj.read())
+            # open(f"Metadata_{key}.xml", "wb").write(xmlObj.read())
             # sys.exit()
 
             # Clean up ...

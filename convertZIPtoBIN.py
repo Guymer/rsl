@@ -88,7 +88,7 @@ def findExtent(fname0):
             with zipfile.ZipFile(zipObj, "r") as fobj1:
                 # Read ASCII dataset into RAM so that it becomes seekable ...
                 # NOTE: https://stackoverflow.com/a/12025492
-                ascObj = io.BytesIO(fobj1.read(key + ".asc"))
+                ascObj = io.BytesIO(fobj1.read(f"{key}.asc"))
 
                 # Load header of ASCII dataset ...
                 hdr = loadASCIIheader(ascObj)
@@ -145,7 +145,7 @@ with zipfile.ZipFile(zname, "r") as fobj0:
         with zipfile.ZipFile(zipObj, "r") as fobj1:
             # Read ASCII dataset into RAM so that it becomes seekable ...
             # NOTE: https://stackoverflow.com/a/12025492
-            ascObj = io.BytesIO(fobj1.read(key + ".asc"))
+            ascObj = io.BytesIO(fobj1.read(f"{key}.asc"))
 
             # Load header and contents of ASCII dataset ...
             hdr = loadASCIIheader(ascObj)
