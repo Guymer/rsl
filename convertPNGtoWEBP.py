@@ -40,7 +40,7 @@ del images
 
 # Set heights ...
 # NOTE: By inspection, the PNG frames are 2460px tall.
-heights = [512, 1024, 2048]                                                     # [px]
+heights = [256, 512, 1024, 2048]                                                # [px]
 
 # Loop over heights ...
 for height in heights:
