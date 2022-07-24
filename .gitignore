@@ -26,6 +26,7 @@ createFlood
 # Hide large datasets ...
 *.bin
 *.csv
+*.mp4
 *.out
 *.pbm
 *.pgm
