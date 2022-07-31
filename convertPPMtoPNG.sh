@@ -33,7 +33,7 @@ if [[ -f $ppm ]]; then
 fi
 
 # Loop over PPM images ...
-for ppm in createFlood_*.ppm; do
+for ppm in output/*.ppm; do
     # Skip those that do not exist ...
     [[ ! -f $ppm ]] && continue
 
@@ -46,7 +46,7 @@ for ppm in createFlood_*.ppm; do
 
         # Extract sea level from file name and make title ...
         str="${ppm%.ppm}"
-        str="${str#createFlood_}"
+        str="${str#output/}"
         str="${str:0:1},${str:1:5} sea level rise"
 
         # Make PNG ...

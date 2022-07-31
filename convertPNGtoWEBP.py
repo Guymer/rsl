@@ -21,7 +21,7 @@ print("Making \"createFlood.webp\" ...")
 images = []
 
 # Loop over frames (0,000m to 0,499m) ...
-for frame in sorted(glob.glob("createFlood_0[0-4][0-9][0-9]m.png")):
+for frame in sorted(glob.glob("output/0[0-4][0-9][0-9]m.png")):
     # Open image as RGB (even if it is paletted) ...
     image = PIL.Image.open(frame).convert("RGB")
 
@@ -50,7 +50,7 @@ for height in heights:
     images = []
 
     # Loop over frames (0,000m to 0,499m) ...
-    for frame in sorted(glob.glob("createFlood_0[0-4][0-9][0-9]m.png")):
+    for frame in sorted(glob.glob("output/0[0-4][0-9][0-9]m.png")):
         # Open image as RGB (even if it is paletted) ...
         image = PIL.Image.open(frame).convert("RGB")
 

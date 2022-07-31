@@ -25,16 +25,13 @@ createFlood
 
 # Hide large datasets ...
 *.bin
-*.csv
 *.mp4
 *.out
-*.pbm
-*.pgm
-*.ppm
 *.webp
-*.zip
 terr50_cesh_gb.*
 terr50_gagg_gb.*
 
-# Hide intermediary output files ...
-createFlood_*.png
+# Hide output files ...
+output/*.csv
+output/*.png
+output/*.ppm
