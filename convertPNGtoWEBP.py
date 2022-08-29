@@ -23,7 +23,8 @@ images = []
 # Loop over frames (0,000m to 0,499m) ...
 for frame in sorted(glob.glob("output/0[0-4][0-9][0-9]m.png")):
     # Open image as RGB (even if it is paletted) ...
-    image = PIL.Image.open(frame).convert("RGB")
+    with PIL.Image.open(frame) as iObj:
+        image = iObj.convert("RGB")
 
     # Append it to the list ...
     images.append(image)
@@ -52,7 +53,8 @@ for height in heights:
     # Loop over frames (0,000m to 0,499m) ...
     for frame in sorted(glob.glob("output/0[0-4][0-9][0-9]m.png")):
         # Open image as RGB (even if it is paletted) ...
-        image = PIL.Image.open(frame).convert("RGB")
+        with PIL.Image.open(frame) as iObj:
+            image = iObj.convert("RGB")
 
         # Calculate width ...
         ratio = float(image.width) / float(image.height)                        # [px/px]
