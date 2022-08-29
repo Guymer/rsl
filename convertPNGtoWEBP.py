@@ -33,8 +33,6 @@ for frame in sorted(glob.glob("output/0[0-4][0-9][0-9]m.png")):
 images[0].save("createFlood.webp", lossless = True, quality = 100, method = 6, save_all = True, append_images = images[1:], duration = 40, loop = 0, minimize_size = True)
 
 # Clean up ...
-for image in images:
-    image.close()
 del images
 
 # ******************************************************************************
@@ -67,6 +65,4 @@ for height in heights:
     images[0].save(f"createFlood{height:04d}px.webp", lossless = True, quality = 100, method = 6, save_all = True, append_images = images[1:], duration = 40, loop = 0, minimize_size = True)
 
     # Clean up ...
-    for image in images:
-        image.close()
     del images
