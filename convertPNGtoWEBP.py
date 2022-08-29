@@ -10,6 +10,13 @@ try:
 except:
     raise Exception("\"PIL\" is not installed; run \"pip install --user Pillow\"") from None
 
+# Import my modules ...
+try:
+    import pyguymer3
+    import pyguymer3.media
+except:
+    raise Exception("\"pyguymer3\" is not installed; you need to have the Python module from https://github.com/Guymer/PyGuymer3 located somewhere in your $PYTHONPATH") from None
+
 # Configure PIL to open images up to 1 GiP ...
 PIL.Image.MAX_IMAGE_PIXELS = 1024 * 1024 * 1024                                 # [px]
 
@@ -30,7 +37,11 @@ for frame in sorted(glob.glob("output/0[0-4][0-9][0-9]m.png")):
     images.append(image)
 
 # Save 25fps WEBP ...
-images[0].save("createFlood.webp", lossless = True, quality = 100, method = 6, save_all = True, append_images = images[1:], duration = 40, loop = 0, minimize_size = True)
+pyguymer3.media.images2webp(
+    images,
+    "createFlood.webp",
+    strip = True,
+)
 
 # Clean up ...
 del images
@@ -62,7 +73,11 @@ for height in heights:
         images.append(image.resize((width, height), resample = PIL.Image.Resampling.LANCZOS))
 
     # Save 25fps WEBP ...
-    images[0].save(f"createFlood{height:04d}px.webp", lossless = True, quality = 100, method = 6, save_all = True, append_images = images[1:], duration = 40, loop = 0, minimize_size = True)
+    pyguymer3.media.images2webp(
+        images,
+        f"createFlood{height:04d}px.webp",
+        strip = True,
+    )
 
     # Clean up ...
     del images
