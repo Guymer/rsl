@@ -34,23 +34,41 @@ except:
 # Find file containing all the country shapes ...
 shape_file = cartopy.io.shapereader.natural_earth(
     resolution = "10m",
-    category = "cultural",
-    name = "admin_0_countries"
+      category = "cultural",
+          name = "admin_0_countries",
 )
 
 # Loop over records ...
 for record in cartopy.io.shapereader.Reader(shape_file).records():
-    # Skip this record if it is not for a country in the list ...
-    if record.attributes["NAME"] != "United Kingdom":
+    # Create short-hands ...
+    # NOTE: According to the developer of Natural Earth:
+    #           "Because Natural Earth has a more fidelity than ISO, and tracks
+    #           countries that ISO doesn't, Natural Earth maintains it's own set
+    #           of 3-character codes for each admin-0 related feature."
+    #       Therefore, when "ISO_A2" or "ISO_A3" are not populated I must fall
+    #       back on "ISO_A2_EH" and "ISO_A3_EH" instead, see:
+    #         * https://github.com/nvkelso/natural-earth-vector/issues/268
+    neA2 = record.attributes["ISO_A2"].replace("\x00", " ").strip()
+    neA3 = record.attributes["ISO_A3"].replace("\x00", " ").strip()
+    neCountry = record.attributes["NAME"].replace("\x00", " ").strip()
+    if neA2 == "-99":
+        print(f"INFO: Falling back on \"ISO_A2_EH\" for \"{neCountry}\".")
+        neA2 = record.attributes["ISO_A2_EH"].replace("\x00", " ").strip()
+    if neA3 == "-99":
+        print(f"INFO: Falling back on \"ISO_A3_EH\" for \"{neCountry}\".")
+        neA3 = record.attributes["ISO_A3_EH"].replace("\x00", " ").strip()
+
+    # Skip this record if it is not for the UK ...
+    if neCountry != "United Kingdom":
         continue
 
     # Find the bounding box ...
-    lon_min, lat_min, lon_max, lat_max = record.bounds
+    lon_min, lat_min, lon_max, lat_max = record.bounds                          # [°], [°], [°], [°]
 
-# NOTE: By manual inspection the UK is 15.462484 wide and 10.938273 tall (don't
-#       forget Rockall).
-print("{:7.3f} <= x <= {:7.3f} ({:.6f} wide)".format(lon_min, lon_max, lon_max - lon_min))
-print("{:7.3f} <= y <= {:7.3f} ({:.6f} tall)".format(lat_min, lat_max, lat_max - lat_min))
+# NOTE: By manual inspection on 2019-01-19, the UK is 15.462484° wide and
+#       10.938273° tall (don't forget Rockall).
+print(f"{lon_min:7.3f}° <= lon <= {lon_max:7.3f}° ({lon_max - lon_min:.6f}° wide)")
+print(f"{lat_min:7.3f}° <= lat <= {lat_max:7.3f}° ({lat_max - lat_min:.6f}° tall)")
 
 # ******************************************************************************
 # *                PART 2: LOAD THE OS CONTOURS AND MAKE MASKS                 *
@@ -65,13 +83,12 @@ fname0 = "terr50_cesh_gb.zip"
 pattern = re.compile(r"data/[a-z]+/[a-z]+[0-9]+_OST50CONT_[0-9]+.zip")
 
 # Initialize list and dictionary ...
-# NOTE: By manual inspection on 2019-01-19 the limits are -11 and 134.
+# NOTE: By manual inspection on 2019-01-19, the limits are -11 and 134.
 levels = []                                                                     # [10m]
 contours = {}
 for level in range(-11, 135):
     levels.append(level)                                                        # [10m]
-    contours[level] = 0
-    #contours[level] = []
+    contours[level] = 0                                                         # [#]
 
 # Load dataset ...
 with zipfile.ZipFile(fname0, "r") as fobj0:
@@ -114,8 +131,7 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
 
                 # Convert elevation into index and append to list ...
                 level = int(shapeRecord.record[3]) / 10                         # [10m]
-                contours[level] += 1
-                #contours[level].append(shapeRecord.shape)
+                contours[level] += 1                                            # [#]
 
             # Clean up ...
             del fobj2
@@ -132,6 +148,6 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
 #       swapping occurs (ignoring the ZFS caches). Lets go for 40,000 pixels by
 #       60,000 pixels (with a pixel being approximately 0.25 millidegrees).
 
-print("{:d} elevation levels".format(len(levels)))
+print(f"{len(levels):d} elevation levels")
 for level in levels:
     print(level, contours[level])
