@@ -32,34 +32,19 @@ except:
 # ******************************************************************************
 
 # Find file containing all the country shapes ...
-shape_file = cartopy.io.shapereader.natural_earth(
+sfile = cartopy.io.shapereader.natural_earth(
     resolution = "10m",
       category = "cultural",
           name = "admin_0_countries",
 )
 
 # Loop over records ...
-for record in cartopy.io.shapereader.Reader(shape_file).records():
-    # Create short-hands ...
-    # NOTE: According to the developer of Natural Earth:
-    #           "Because Natural Earth has a more fidelity than ISO, and tracks
-    #           countries that ISO doesn't, Natural Earth maintains it's own set
-    #           of 3-character codes for each admin-0 related feature."
-    #       Therefore, when "ISO_A2" or "ISO_A3" are not populated I must fall
-    #       back on "ISO_A2_EH" and "ISO_A3_EH" instead, see:
-    #         * https://github.com/nvkelso/natural-earth-vector/issues/268
-    neA2 = record.attributes["ISO_A2"].replace("\x00", " ").strip()
-    neA3 = record.attributes["ISO_A3"].replace("\x00", " ").strip()
-    neCountry = record.attributes["NAME"].replace("\x00", " ").strip()
-    if neA2 == "-99":
-        print(f"INFO: Falling back on \"ISO_A2_EH\" for \"{neCountry}\".")
-        neA2 = record.attributes["ISO_A2_EH"].replace("\x00", " ").strip()
-    if neA3 == "-99":
-        print(f"INFO: Falling back on \"ISO_A3_EH\" for \"{neCountry}\".")
-        neA3 = record.attributes["ISO_A3_EH"].replace("\x00", " ").strip()
+for record in cartopy.io.shapereader.Reader(sfile).records():
+    # Create short-hand ...
+    neName = pyguymer3.geo.getRecordAttribute(record, "NAME")
 
     # Skip this record if it is not for the UK ...
-    if neCountry != "United Kingdom":
+    if neName != "United Kingdom":
         continue
 
     # Find the bounding box ...
