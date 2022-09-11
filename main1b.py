@@ -27,6 +27,13 @@ try:
 except:
     raise Exception("\"shapefile\" is not installed; run \"pip install --user pyshp\"") from None
 
+# Import my modules ...
+try:
+    import pyguymer3
+    import pyguymer3.geo
+except:
+    raise Exception("\"pyguymer3\" is not installed; you need to have the Python module from https://github.com/Guymer/PyGuymer3 located somewhere in your $PYTHONPATH") from None
+
 # ******************************************************************************
 # *                     PART 1: FIND OUT HOW BIG THE UK IS                     *
 # ******************************************************************************
