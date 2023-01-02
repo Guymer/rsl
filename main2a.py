@@ -21,10 +21,10 @@ import zipfile
 # NOTE: https://scitools.org.uk/cartopy/docs/latest/crs/projections.html#osgb
 
 # Define function ...
-def loadASCIIheader(fobj):
+def loadASCIIheader(fObj):
     # Read lines from ASCII dataset (and reset pointer) ...
-    lines = fobj.readlines()
-    fobj.seek(0)
+    lines = fObj.readlines()
+    fObj.seek(0)
 
     # Populate header ...
     header = {
@@ -57,9 +57,9 @@ minY =  2**31
 pattern = re.compile(r"data/[a-z]+/[a-z]+[0-9]+_OST50GRID_[0-9]+.zip")
 
 # Load dataset ...
-with zipfile.ZipFile(fname0, "r") as fobj0:
+with zipfile.ZipFile(fname0, "r") as fObj0:
     # Loop over members ...
-    for fname1 in fobj0.namelist():
+    for fname1 in fObj0.namelist():
         # Skip this member if it is not a sub-dataset ...
         if pattern.match(fname1) is None:
             continue
@@ -69,17 +69,17 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
 
         # Read sub-dataset into RAM so that it becomes seekable ...
         # NOTE: https://stackoverflow.com/a/12025492
-        zipObj = io.BytesIO(fobj0.read(fname1))
+        zipObj = io.BytesIO(fObj0.read(fname1))
 
         # Load sub-dataset ...
-        with zipfile.ZipFile(zipObj, "r") as fobj1:
+        with zipfile.ZipFile(zipObj, "r") as fObj1:
             # Read files into RAM so that they become seekable ...
             # NOTE: https://stackoverflow.com/a/12025492
-            ascObj = io.BytesIO(fobj1.read(f"{key}.asc"))
-            auxObj = io.BytesIO(fobj1.read(f"{key}.asc.aux.xml"))
-            gmlObj = io.BytesIO(fobj1.read(f"{key}.gml"))
-            prjObj = io.BytesIO(fobj1.read(f"{key}.prj"))
-            xmlObj = io.BytesIO(fobj1.read(f"Metadata_{key}.xml"))
+            ascObj = io.BytesIO(fObj1.read(f"{key}.asc"))
+            auxObj = io.BytesIO(fObj1.read(f"{key}.asc.aux.xml"))
+            gmlObj = io.BytesIO(fObj1.read(f"{key}.gml"))
+            prjObj = io.BytesIO(fObj1.read(f"{key}.prj"))
+            xmlObj = io.BytesIO(fObj1.read(f"Metadata_{key}.xml"))
 
             # Load header of ASCII dataset ...
             hdr = loadASCIIheader(ascObj)

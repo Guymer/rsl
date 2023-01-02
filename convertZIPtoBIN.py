@@ -26,19 +26,19 @@ except:
 # NOTE: https://scitools.org.uk/cartopy/docs/latest/crs/projections.html#osgb
 
 # Define function ...
-def loadASCIIcontents(fobj, n):
+def loadASCIIcontents(fObj, n):
     # Read ASCII dataset (and reset pointer) ...
-    contents = numpy.loadtxt(fobj, delimiter = " ", dtype = numpy.float32, skiprows = n)
-    fobj.seek(0)
+    contents = numpy.loadtxt(fObj, delimiter = " ", dtype = numpy.float32, skiprows = n)
+    fObj.seek(0)
 
     # Return contents ...
     return contents
 
 # Define function ...
-def loadASCIIheader(fobj):
+def loadASCIIheader(fObj):
     # Read lines from ASCII dataset (and reset pointer) ...
-    lines = fobj.readlines()
-    fobj.seek(0)
+    lines = fObj.readlines()
+    fObj.seek(0)
 
     # Populate header ...
     header = {
@@ -70,9 +70,9 @@ def findExtent(fname0):
     pattern = re.compile(r"data/[a-z]+/[a-z]+[0-9]+_OST50GRID_[0-9]+.zip")
 
     # Load dataset ...
-    with zipfile.ZipFile(fname0, "r") as fobj0:
+    with zipfile.ZipFile(fname0, "r") as fObj0:
         # Loop over members ...
-        for fname1 in fobj0.namelist():
+        for fname1 in fObj0.namelist():
             # Skip this member if it is not a sub-dataset ...
             if pattern.match(fname1) is None:
                 continue
@@ -82,13 +82,13 @@ def findExtent(fname0):
 
             # Read sub-dataset into RAM so that it becomes seekable ...
             # NOTE: https://stackoverflow.com/a/12025492
-            zipObj = io.BytesIO(fobj0.read(fname1))
+            zipObj = io.BytesIO(fObj0.read(fname1))
 
             # Load sub-dataset ...
-            with zipfile.ZipFile(zipObj, "r") as fobj1:
+            with zipfile.ZipFile(zipObj, "r") as fObj1:
                 # Read ASCII dataset into RAM so that it becomes seekable ...
                 # NOTE: https://stackoverflow.com/a/12025492
-                ascObj = io.BytesIO(fobj1.read(f"{key}.asc"))
+                ascObj = io.BytesIO(fObj1.read(f"{key}.asc"))
 
                 # Load header of ASCII dataset ...
                 hdr = loadASCIIheader(ascObj)
@@ -127,9 +127,9 @@ elev = numpy.zeros((ny, nx), dtype = numpy.float32)                             
 pattern = re.compile(r"data/[a-z]+/[a-z]+[0-9]+_OST50GRID_[0-9]+.zip")
 
 # Load dataset ...
-with zipfile.ZipFile(zname, "r") as fobj0:
+with zipfile.ZipFile(zname, "r") as fObj0:
     # Loop over members ...
-    for fname1 in fobj0.namelist():
+    for fname1 in fObj0.namelist():
         # Skip this member if it is not a sub-dataset ...
         if pattern.match(fname1) is None:
             continue
@@ -139,13 +139,13 @@ with zipfile.ZipFile(zname, "r") as fobj0:
 
         # Read sub-dataset into RAM so that it becomes seekable ...
         # NOTE: https://stackoverflow.com/a/12025492
-        zipObj = io.BytesIO(fobj0.read(fname1))
+        zipObj = io.BytesIO(fObj0.read(fname1))
 
         # Load sub-dataset ...
-        with zipfile.ZipFile(zipObj, "r") as fobj1:
+        with zipfile.ZipFile(zipObj, "r") as fObj1:
             # Read ASCII dataset into RAM so that it becomes seekable ...
             # NOTE: https://stackoverflow.com/a/12025492
-            ascObj = io.BytesIO(fobj1.read(f"{key}.asc"))
+            ascObj = io.BytesIO(fObj1.read(f"{key}.asc"))
 
             # Load header and contents of ASCII dataset ...
             hdr = loadASCIIheader(ascObj)

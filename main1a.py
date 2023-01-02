@@ -33,9 +33,9 @@ fname0 = "terr50_cesh_gb.zip"
 pattern = re.compile(r"data/[a-z]+/[a-z]+[0-9]+_OST50CONT_[0-9]+.zip")
 
 # Load dataset ...
-with zipfile.ZipFile(fname0, "r") as fobj0:
+with zipfile.ZipFile(fname0, "r") as fObj0:
     # Loop over members ...
-    for fname1 in fobj0.namelist():
+    for fname1 in fObj0.namelist():
         # Skip this member if it is not a sub-dataset ...
         if pattern.match(fname1) is None:
             continue
@@ -45,23 +45,23 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
 
         # Read sub-dataset into RAM so that it becomes seekable ...
         # NOTE: https://stackoverflow.com/a/12025492
-        zipObj = io.BytesIO(fobj0.read(fname1))
+        zipObj = io.BytesIO(fObj0.read(fname1))
 
         # Load sub-dataset ...
-        with zipfile.ZipFile(zipObj, "r") as fobj1:
+        with zipfile.ZipFile(zipObj, "r") as fObj1:
             # Read files into RAM so that they become seekable ...
             # NOTE: https://stackoverflow.com/a/12025492
-            dbfObj = io.BytesIO(fobj1.read(f"{key}_line.dbf"))
-            shpObj = io.BytesIO(fobj1.read(f"{key}_line.shp"))
-            shxObj = io.BytesIO(fobj1.read(f"{key}_line.shx"))
+            dbfObj = io.BytesIO(fObj1.read(f"{key}_line.dbf"))
+            shpObj = io.BytesIO(fObj1.read(f"{key}_line.shp"))
+            shxObj = io.BytesIO(fObj1.read(f"{key}_line.shx"))
 
-            print(fobj1.read(f"{key}_line.prj"))
+            print(fObj1.read(f"{key}_line.prj"))
 
             # Open shapefile ...
-            fobj2 = shapefile.Reader(dbf = dbfObj, shp = shpObj, shx = shxObj)
+            fObj2 = shapefile.Reader(dbf = dbfObj, shp = shpObj, shx = shxObj)
 
             # Loop over shape+record pairs ...
-            for shapeRecord in fobj2.shapeRecords():
+            for shapeRecord in fObj2.shapeRecords():
                 # Crash if this shape+record is not a polyline ...
                 # NOTE: The shapefile is only supposed to contain contours
                 #       and tide marks.
@@ -78,7 +78,7 @@ with zipfile.ZipFile(fname0, "r") as fobj0:
                 sys.exit()
 
             # Clean up ...
-            del fobj2
+            del fObj2
             del dbfObj
             del shpObj
             del shxObj
