@@ -18,31 +18,10 @@ import re
 # import sys
 import zipfile
 
+# Import my modules ...
+import rsl
+
 # NOTE: https://scitools.org.uk/cartopy/docs/latest/crs/projections.html#osgb
-
-# Define function ...
-def loadASCIIheader(fObj):
-    # Read lines from ASCII dataset (and reset pointer) ...
-    lines = fObj.readlines()
-    fObj.seek(0)
-
-    # Populate header ...
-    header = {
-            "ncols" : int(lines[0].decode("ascii").strip().split()[1]),
-            "nrows" : int(lines[1].decode("ascii").strip().split()[1]),
-        "xllcorner" : int(lines[2].decode("ascii").strip().split()[1]),
-        "yllcorner" : int(lines[3].decode("ascii").strip().split()[1]),
-         "cellsize" : int(lines[4].decode("ascii").strip().split()[1]),
-    }
-
-    # Determine length of header ...
-    header["length"] = len(lines) - header["nrows"]
-
-    # Clean up ...
-    del lines
-
-    # Return header ...
-    return header
 
 # Specify the path to the "OS Terrain 50" dataset ...
 fname0 = "terr50_gagg_gb.zip"
@@ -82,7 +61,7 @@ with zipfile.ZipFile(fname0, "r") as fObj0:
             xmlObj = io.BytesIO(fObj1.read(f"Metadata_{key}.xml"))
 
             # Load header of ASCII dataset ...
-            hdr = loadASCIIheader(ascObj)
+            hdr = rsl.loadASCIIheader(ascObj)
 
             # Increment limits ...
             maxX = max(maxX, hdr["xllcorner"] // hdr["cellsize"] + hdr["ncols"])
