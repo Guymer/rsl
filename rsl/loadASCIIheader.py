@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Define function ...
-def loadASCIIheader(fObj):
+def loadASCIIheader(fObj, /):
     # Read lines from ASCII dataset (and reset pointer) ...
     lines = fObj.readlines()
     fObj.seek(0)

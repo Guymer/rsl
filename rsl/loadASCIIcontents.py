@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Define function ...
-def loadASCIIcontents(fObj, n):
+def loadASCIIcontents(fObj, n, /):
     # Import special modules ...
     try:
         import numpy

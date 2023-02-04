@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Define function ...
-def findExtent(fname0):
+def findExtent(fname0, /):
     # Import standard modules ...
     import io
     import re
