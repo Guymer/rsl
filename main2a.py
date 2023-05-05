@@ -80,16 +80,5 @@ if __name__ == "__main__":
                 # open(f"Metadata_{key}.xml", "wb").write(xmlObj.read())
                 # sys.exit()
 
-                # Clean up ...
-                del ascObj
-                del auxObj
-                del gmlObj
-                del prjObj
-                del xmlObj
-                del hdr
-
-            # Clean up ...
-            del zipObj
-
     print(minX, maxX)
     print(minY, maxY)

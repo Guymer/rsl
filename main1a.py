@@ -79,12 +79,3 @@ if __name__ == "__main__":
                     print(shapeRecord.record)
                     print(shapeRecord.shape)
                     sys.exit()
-
-                # Clean up ...
-                del fObj2
-                del dbfObj
-                del shpObj
-                del shxObj
-
-            # Clean up ...
-            del zipObj

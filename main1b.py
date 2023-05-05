@@ -128,15 +128,6 @@ if __name__ == "__main__":
                     level = int(shapeRecord.record[3]) / 10                     # [10m]
                     contours[level] += 1                                        # [#]
 
-                # Clean up ...
-                del fObj2
-                del dbfObj
-                del shpObj
-                del shxObj
-
-            # Clean up ...
-            del zipObj
-
     # NOTE: By manual inspection there are 146 levels. On a MacBook Pro with 8
     #       GB of RAM that is upto 52.26 MiB of RAM per level, before swapping
     #       occurs. On a NAS with 16 GB of RAM that is upto 104.51 MiB of RAM

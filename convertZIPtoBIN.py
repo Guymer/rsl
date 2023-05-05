@@ -74,9 +74,6 @@ if __name__ == "__main__":
                 hdr = rsl.loadASCIIheader(ascObj)
                 cont = rsl.loadASCIIcontents(ascObj, hdr["length"])             # [m]
 
-                # Clean up ...
-                del ascObj
-
                 # Determine indexes (from the upper-left corner not the
                 # lower-left corner) ...
                 ix1 = hdr["xllcorner"] // hdr["cellsize"]
@@ -86,13 +83,6 @@ if __name__ == "__main__":
 
                 # Populate array ...
                 elev[iy1:iy2, ix1:ix2] = cont[:, :]                             # [m]
-
-                # Clean up ...
-                del hdr
-                del cont
-
-            # Clean up ...
-            del zipObj
 
     # Save BIN ...
     elev.tofile("terr50_gagg_gb.bin")

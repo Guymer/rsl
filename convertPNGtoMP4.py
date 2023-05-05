@@ -25,9 +25,6 @@ if __name__ == "__main__":
     vname = pyguymer3.media.images2mp4(frames)
     shutil.move(vname, "createFlood.mp4")
 
-    # Clean up ...
-    del frames
-
     # **************************************************************************
 
     # Set heights ...
@@ -44,6 +41,3 @@ if __name__ == "__main__":
         # Save 25fps MP4 ...
         vname = pyguymer3.media.images2mp4(frames, screenWidth = height, screenHeight = height)
         shutil.move(vname, f"createFlood{height:04d}px.mp4")
-
-        # Clean up ...
-        del frames

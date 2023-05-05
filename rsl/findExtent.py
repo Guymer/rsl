@@ -43,17 +43,11 @@ def findExtent(fname0, /):
                 # Load header of ASCII dataset ...
                 hdr = loadASCIIheader(ascObj)
 
-                # Clean up ...
-                del ascObj
-
                 # Increment limits ...
                 maxX = max(maxX, hdr["xllcorner"] // hdr["cellsize"] + hdr["ncols"])
                 maxY = max(maxY, hdr["yllcorner"] // hdr["cellsize"] + hdr["nrows"])
                 minX = min(minX, hdr["xllcorner"] // hdr["cellsize"])
                 minY = min(minY, hdr["yllcorner"] // hdr["cellsize"])
-
-            # Clean up ...
-            del zipObj
 
     # Return answers ...
     return minX, maxX, minY, maxY
