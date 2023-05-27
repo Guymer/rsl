@@ -1,8 +1,9 @@
 # Find executables ...
-CUT  := $(shell which cut            2> /dev/null || echo "ERROR")
-FC   := $(shell which gfortran-mp-12 2> /dev/null || echo "ERROR")
-GREP := $(shell which grep           2> /dev/null || echo "ERROR")
-RM   := $(shell which rm             2> /dev/null || echo "ERROR")
+CUT     := $(shell which cut            2> /dev/null || echo "ERROR")
+FC      := $(shell which gfortran-mp-12 2> /dev/null || echo "ERROR")
+GREP    := $(shell which grep           2> /dev/null || echo "ERROR")
+PYTHON3 := $(shell which python3.11     2> /dev/null || echo "ERROR")
+RM      := $(shell which rm             2> /dev/null || echo "ERROR")
 
 # Set defaults ...
 DEBUG  ?= false
@@ -52,7 +53,7 @@ all:				compile
 clean:				$(RM)														\
 					$(FC)
 	$(RM) -f convertBINtoPPM createFlood *.mod *.o
-	$(MAKE) -r -C $(FTNLIB) FC=$(FC) clean
+	$(MAKE) -r -C $(FTNLIB) FC=$(FC) PYTHON3=$(PYTHON3) clean
 
 # "gmake -r compile" = compiles the code
 compile:			convertBINtoPPM												\
@@ -83,7 +84,7 @@ $(FTNLIB)/%.o:		$(FC)														\
 					Makefile													\
 					$(FTNLIB)/Makefile											\
 					$(FTNLIB)/%.F90
-	$(MAKE) -r -C $(FTNLIB) DEBUG=$(DEBUG) FC=$(FC) $*.o
+	$(MAKE) -r -C $(FTNLIB) DEBUG=$(DEBUG) FC=$(FC) PYTHON3=$(PYTHON3) $*.o
 
 mod_funcs.mod																	\
 mod_funcs.o:		$(FC)														\
