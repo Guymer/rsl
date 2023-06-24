@@ -103,11 +103,11 @@ help:
 #         * https://stackoverflow.com/a/58081934
 
 $(FTNLIB)/%.mod																	\
-$(FTNLIB)/%.o:		$(FTNLIB)/%.F90
+$(FTNLIB)/%.o &:	$(FTNLIB)/%.F90
 	$(MAKE) -r -C $(FTNLIB) DEBUG=$(DEBUG) FC=$(FC) PYTHON3=$(PYTHON3) $*.o
 
 mod_funcs.mod																	\
-mod_funcs.o:		$(FTNLIB)/mod_safe.mod										\
+mod_funcs.o &:		$(FTNLIB)/mod_safe.mod										\
 					mod_funcs.F90
 	$(FC) -c $(LANG_OPTS) $(WARN_OPTS) $(OPTM_OPTS) $(MACH_OPTS) -I$(FTNLIB) mod_funcs.F90
 
