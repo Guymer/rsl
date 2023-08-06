@@ -28,7 +28,7 @@ if __name__ == "__main__":
     # **************************************************************************
 
     # Set heights ...
-    # NOTE: By inspection, the PNG frames are 2460px tall.
+    # NOTE: By inspection, the PNG frames are 2,460 px tall.
     heights = [512, 1024, 2048]                                                 # [px]
 
     # Loop over heights ...
