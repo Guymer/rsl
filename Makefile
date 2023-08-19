@@ -67,7 +67,7 @@ endif
 # *                           USER-SPECIFIED TARGETS                           *
 # ******************************************************************************
 
-# "gmake -r [all]"   = "make compile" (default)
+# "gmake -r [all]"   = "gmake -r compile" (default)
 all:				compile
 
 # "gmake -r clean"   = removes the compiled code
