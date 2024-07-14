@@ -3,4 +3,4 @@
 
 cartopy
 numpy
-shapefile
+pyshp
