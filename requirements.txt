@@ -2,5 +2,6 @@
 # "check_READMEs.py" script from "https://github.com/Guymer/misc".
 
 cartopy
+meson
 numpy
 pyshp
