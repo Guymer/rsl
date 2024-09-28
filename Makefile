@@ -3,7 +3,7 @@
 # ******************************************************************************
 
 DEBUG     ?= false
-FTNLIB    ?= fortranlib
+FTNLIB    ?= $(abspath fortranlib)
 DEBG_OPTS := -g -fcheck=all
 LANG_OPTS := -ffree-form -ffree-line-length-none -frecursive -fno-unsafe-math-optimizations -frounding-math -fsignaling-nans -fPIC
 WARN_OPTS := -Wall -Wextra -Waliasing -Wcharacter-truncation -Wconversion-extra -Wimplicit-interface -Wimplicit-procedure -Wunderflow -Wtabs
@@ -17,7 +17,7 @@ MACH_OPTS := -march=native -m64
 CUT     := $(shell which cut            2> /dev/null || echo "ERROR")
 FC      := $(shell which gfortran-mp-14 2> /dev/null || echo "ERROR")
 GREP    := $(shell which grep           2> /dev/null || echo "ERROR")
-PYTHON3 := $(shell which python3.11     2> /dev/null || echo "ERROR")
+PYTHON3 := $(shell which python3.12     2> /dev/null || echo "ERROR")
 RM      := $(shell which rm             2> /dev/null || echo "ERROR")
 
 # ******************************************************************************
