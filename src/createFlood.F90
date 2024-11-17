@@ -74,7 +74,7 @@ PROGRAM main
 
     ! Allocate (1.21 GiB) array and populate it ...
     CALL sub_allocate_array(elev, "elev", nx, ny, .TRUE._INT8)
-    CALL sub_load_array_from_BIN(elev, "../terr50_gagg_gb.bin")                    ! [m]
+    CALL sub_load_array_from_BIN(elev, "../terr50_gagg_gb.bin")                 ! [m]
 
     ! Allocate (309.68 MiB) array and initialize it so that nowhere is flooded ...
     CALL sub_allocate_array(flooded, "flooded", nx, ny, .TRUE._INT8)
