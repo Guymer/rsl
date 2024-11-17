@@ -115,7 +115,11 @@ if __name__ == "__main__":
                 shxObj = io.BytesIO(fObj1.read(f"{key}_line.shx"))
 
                 # Open shapefile ...
-                fObj2 = shapefile.Reader(dbf = dbfObj, shp = shpObj, shx = shxObj)
+                fObj2 = shapefile.Reader(
+                    dbf = dbfObj,
+                    shp = shpObj,
+                    shx = shxObj,
+                )
 
                 # Loop over shape+record pairs ...
                 for shapeRecord in fObj2.shapeRecords():
@@ -131,7 +135,8 @@ if __name__ == "__main__":
                         continue
 
                     # Convert elevation into index and append to list ...
-                    level = int(shapeRecord.record[3]) / 10                     # [10m]
+                    foo.append(shapeRecord.record[3])
+                    level = round(shapeRecord.record[3] / 10.0)                 # [10m]
                     contours[level] += 1                                        # [#]
 
     # NOTE: By manual inspection there are 146 levels. On a MacBook Pro with 8
