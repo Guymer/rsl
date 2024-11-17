@@ -16,8 +16,8 @@ PROGRAM main
     INTEGER(kind = INT64), PARAMETER                                            :: tileScale = 50_INT64
 
     ! Declare variables ...
-    CHARACTER(len = 16)                                                         :: cname
-    CHARACTER(len = 16)                                                         :: iname
+    CHARACTER(len = 19)                                                         :: cname
+    CHARACTER(len = 19)                                                         :: iname
     LOGICAL(kind = INT8), ALLOCATABLE, DIMENSION(:, :)                          :: flooded
     INTEGER(kind = INT64)                                                       :: i
     INTEGER(kind = INT64)                                                       :: iSeaLevel
@@ -65,7 +65,7 @@ PROGRAM main
     END IF
 
     ! Ensure that the output directory exists ...
-    CALL EXECUTE_COMMAND_LINE("mkdir -p output", CMDMSG = errmsg, EXITSTAT = errnum)
+    CALL EXECUTE_COMMAND_LINE("mkdir -p ../output", CMDMSG = errmsg, EXITSTAT = errnum)
     IF(errnum /= 0_INT32)THEN
         WRITE(fmt = '("ERROR: ", a, ". ERRMSG = ", a, ". ERRNUM = ", i3, ".")', unit = ERROR_UNIT) "Failed to make output directory", TRIM(errmsg), errnum
         FLUSH(unit = ERROR_UNIT)
@@ -74,7 +74,7 @@ PROGRAM main
 
     ! Allocate (1.21 GiB) array and populate it ...
     CALL sub_allocate_array(elev, "elev", nx, ny, .TRUE._INT8)
-    CALL sub_load_array_from_BIN(elev, "terr50_gagg_gb.bin")                    ! [m]
+    CALL sub_load_array_from_BIN(elev, "../terr50_gagg_gb.bin")                    ! [m]
 
     ! Allocate (309.68 MiB) array and initialize it so that nowhere is flooded ...
     CALL sub_allocate_array(flooded, "flooded", nx, ny, .TRUE._INT8)
@@ -93,8 +93,8 @@ PROGRAM main
         seaLevel = REAL(iSeaLevel, kind = REAL32)                               ! [m]
 
         ! Create file names ...
-        WRITE(cname, '("output/", i4.4, "m.csv")') iSeaLevel
-        WRITE(iname, '("output/", i4.4, "m.ppm")') iSeaLevel
+        WRITE(cname, '("../output/", i4.4, "m.csv")') iSeaLevel
+        WRITE(iname, '("../output/", i4.4, "m.ppm")') iSeaLevel
 
         ! Open CSV ...
         OPEN(action = "write", file = cname, form = "formatted", iomsg = errmsg, iostat = errnum, newunit = funit, status = "replace")
