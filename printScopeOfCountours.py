@@ -135,7 +135,6 @@ if __name__ == "__main__":
                         continue
 
                     # Convert elevation into index and append to list ...
-                    foo.append(shapeRecord.record[3])
                     level = round(shapeRecord.record[3] / 10.0)                 # [10m]
                     contours[level] += 1                                        # [#]
 
