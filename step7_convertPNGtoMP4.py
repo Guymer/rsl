@@ -16,28 +16,33 @@ if __name__ == "__main__":
 
     # **************************************************************************
 
+    # Find the frames ...
+    frames = sorted(glob.glob("output/????m.png"))
+
+    # **************************************************************************
+
     print("Making \"createFlood.mp4\" ...")
 
-    # Set list ...
-    frames = sorted(glob.glob("output/0[0-4][0-9][0-9]m.png"))
-
     # Save 25fps MP4 ...
-    vname = pyguymer3.media.images2mp4(frames)
+    vname = pyguymer3.media.images2mp4(
+        frames,
+    )
     shutil.move(vname, "createFlood.mp4")
 
     # **************************************************************************
 
-    # Set heights ...
+    # Set maximum sizes ...
     # NOTE: By inspection, the PNG frames are 2,460 px tall.
-    heights = [512, 1024, 2048]                                                 # [px]
+    maxSizes = [512, 1024, 2048]                                                # [px]
 
-    # Loop over heights ...
-    for height in heights:
-        print(f"Making \"createFlood{height:04d}px.mp4\" ...")
-
-        # Set list ...
-        frames = sorted(glob.glob("output/0[0-4][0-9][0-9]m.png"))
+    # Loop over maximum sizes ...
+    for maxSize in maxSizes:
+        print(f"Making \"createFlood{maxSize:04d}px.mp4\" ...")
 
         # Save 25fps MP4 ...
-        vname = pyguymer3.media.images2mp4(frames, screenWidth = height, screenHeight = height)
-        shutil.move(vname, f"createFlood{height:04d}px.mp4")
+        vname = pyguymer3.media.images2mp4(
+            frames,
+            screenHeight = maxSize,
+             screenWidth = maxSize,
+        )
+        shutil.move(vname, f"createFlood{maxSize:04d}px.mp4")
