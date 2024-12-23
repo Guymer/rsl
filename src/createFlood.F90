@@ -18,6 +18,7 @@ PROGRAM main
     ! Declare variables ...
     CHARACTER(len = 19)                                                         :: cname
     CHARACTER(len = 19)                                                         :: iname
+    LOGICAL(kind = INT8), ALLOCATABLE, DIMENSION(:, :)                          :: atRisk
     LOGICAL(kind = INT8), ALLOCATABLE, DIMENSION(:, :)                          :: flooded
     INTEGER(kind = INT64)                                                       :: i
     INTEGER(kind = INT64)                                                       :: iSeaLevel
@@ -76,6 +77,9 @@ PROGRAM main
     CALL sub_allocate_array(elev, "elev", nx, ny, .TRUE._INT8)
     CALL sub_load_array_from_BIN(elev, "../terr50_gagg_gb.bin")                 ! [m]
 
+    ! Allocate (309.68 MiB) array ...
+    CALL sub_allocate_array(atRisk, "atRisk", nx, ny, .TRUE._INT8)
+
     ! Allocate (309.68 MiB) array and initialize it so that nowhere is flooded ...
     CALL sub_allocate_array(flooded, "flooded", nx, ny, .TRUE._INT8)
     flooded = .FALSE._INT8
@@ -89,8 +93,9 @@ PROGRAM main
         WRITE(fmt = '("Calculating a sea level rise of ", i4, "m ...")', unit = OUTPUT_UNIT) iSeaLevel
         FLUSH(unit = OUTPUT_UNIT)
 
-        ! Set sea level ...
+        ! Set sea level and find out where is at risk of flooding ...
         seaLevel = REAL(iSeaLevel, kind = REAL32)                               ! [m]
+        atRisk = elev <= seaLevel
 
         ! Create file names ...
         WRITE(cname, '("../output/", i4.4, "m.csv")') iSeaLevel
@@ -195,10 +200,11 @@ PROGRAM main
         FLUSH(unit = OUTPUT_UNIT)
 
         ! Save shrunk final flood ...
-        CALL saveShrunkFlood(nx, ny, flooded, imageScale, iname)
+        CALL saveShrunkFlood(nx, ny, atRisk, flooded, imageScale, iname)
     END DO
 
     ! Clean up ...
     DEALLOCATE(elev)
+    DEALLOCATE(atRisk)
     DEALLOCATE(flooded)
 END PROGRAM main
