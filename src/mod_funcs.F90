@@ -204,6 +204,7 @@ MODULE mod_funcs
         WRITE(hdr, fmt = '("P6 ", i5, " ", i5, " 255 ")') nx, ny
 
         ! Allocate image ...
+        ! NOTE: There is no "sub_allocate_array()" for CHARACTER arrays.
         ALLOCATE(img(nx, ny))
 
         ! Loop over x ...
