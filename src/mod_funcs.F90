@@ -254,7 +254,6 @@ MODULE mod_funcs
         USE ISO_FORTRAN_ENV
         USE mod_safe,       ONLY:   sub_allocate_array
 
-
         IMPLICIT NONE
 
         ! Declare inputs/outputs ...
@@ -325,7 +324,7 @@ MODULE mod_funcs
 
         ! Convert total flood to average flood ...
         ! NOTE: Within shrunkFlooded:
-        !         * 0.0 = not flooded = GREEN
+        !         * 0.0 = not flooded = GREEN/RED
         !         * 1.0 =   flooded   = BLUE
         shrunkFlooded = shrunkFlooded / REAL(scale * scale, kind = REAL32)
 
