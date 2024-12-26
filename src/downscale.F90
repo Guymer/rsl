@@ -53,6 +53,17 @@ PROGRAM main
     CALL sub_save_array_as_BIN(shrunkenElev, "../terr50_gagg_gb_8x.bin")
     DEALLOCATE(shrunkenElev)
 
+    ! Shrink by 100x array and save it ...
+    CALL sub_shrink_array(                                                      &
+                 nx = nx,                                                       &
+                 ny = ny,                                                       &
+                arr = elev,                                                     &
+        shrinkScale = 100_INT64,                                                &
+        shrunkenArr = shrunkenElev                                              &
+    )
+    CALL sub_save_array_as_BIN(shrunkenElev, "../terr50_gagg_gb_100x.bin")
+    DEALLOCATE(shrunkenElev)
+
     ! Clean up ...
     DEALLOCATE(elev)
 END PROGRAM main

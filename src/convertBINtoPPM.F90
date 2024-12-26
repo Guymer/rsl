@@ -65,4 +65,17 @@ PROGRAM main
 
     ! Clean up ...
     DEALLOCATE(elev)
+
+    ! Allocate (126.84 KiB) array and populate it ...
+    CALL sub_allocate_array(elev, "elev", nx / 100_INT64, ny / 100_INT64, .TRUE._INT8)
+    CALL sub_load_array_from_BIN(elev, "../terr50_gagg_gb_100x.bin")            ! [m]
+
+    ! Scale map (up to 1,300m ASL) ...
+    elev = elev / 1300.0e0_REAL32
+
+    ! Save scaled map ...
+    CALL sub_save_array_as_PPM(elev, "../terr50_gagg_gb_100x.ppm", "jet")
+
+    ! Clean up ...
+    DEALLOCATE(elev)
 END PROGRAM main
