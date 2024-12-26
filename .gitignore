@@ -32,6 +32,7 @@ downscale
 terr50_cesh_gb.*
 terr50_gagg_gb.*
 terr50_gagg_gb_?x.*
+terr50_gagg_gb_??x.*
 
 # Hide output files ...
 output/*.csv
