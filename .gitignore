@@ -22,6 +22,7 @@ shellcheck.log
 *.so.dSYM
 convertBINtoPPM
 createFlood
+downscale
 
 # Hide large datasets ...
 *.bin
@@ -30,6 +31,7 @@ createFlood
 *.webp
 terr50_cesh_gb.*
 terr50_gagg_gb.*
+terr50_gagg_gb_?x.*
 
 # Hide output files ...
 output/*.csv
