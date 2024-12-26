@@ -10,7 +10,7 @@ MODULE mod_funcs
         !         * green = above sea level; and
         !         * blue = flooded.
 
-        ! Import modules ...
+        ! Import standard modules ...
         USE ISO_FORTRAN_ENV
 
         IMPLICIT NONE
@@ -88,8 +88,10 @@ MODULE mod_funcs
     END SUBROUTINE saveArray
 
     SUBROUTINE saveShrunkFlood(nx, ny, atRisk, flooded, imageScale, iname)
-        ! Import modules ...
+        ! Import standard modules ...
         USE ISO_FORTRAN_ENV
+
+        ! Import my modules ...
         USE mod_safe,       ONLY:   sub_allocate_array
 
         IMPLICIT NONE
@@ -142,7 +144,7 @@ MODULE mod_funcs
 
                 ! Find total risk ...
                 ! NOTE: Within shrunkAtRisk:
-                !         *          0.           = not at risk = GREEN/BLUE
+                !         *          0.0          = not at risk = GREEN/BLUE
                 !         * imageScale*imageScale =   at risk   = RED
                 shrunkAtRisk(ix, iy) = REAL(COUNT(atRisk(ixlo:ixhi, iylo:iyhi), kind = INT64), kind = REAL32)
 

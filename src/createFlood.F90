@@ -28,6 +28,8 @@ PROGRAM main
     CHARACTER(len = 256)                                                        :: errmsg
     INTEGER(kind = INT32)                                                       :: errnum
 
+    ! **************************************************************************
+
     ! Check imageScale ...
     IF(MOD(nx, imageScale) /= 0_INT64)THEN
         WRITE(fmt = '("ERROR: ", a, ".")', unit = ERROR_UNIT) '"nx" is not an integer multiple of "imageScale"'
