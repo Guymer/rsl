@@ -15,17 +15,31 @@ if ! type optipng &> /dev/null; then
     exit 1
 fi
 
-# Convert dataset map ...
-ppm="terr50_gagg_gb.ppm"
-png="terr50_gagg_gb.png"
-if [[ -f ${ppm} ]]; then
+# Loop over PPM images ...
+for ppm in *.ppm; do
+    # Skip those that do not exist ...
+    [[ ! -f ${ppm} ]] && continue
+
+    # Deduce PNG image ...
+    png="${ppm%.ppm}.png"
+
+    # Check if the PNG needs making ...
     if [[ ${ppm} -nt ${png} ]]; then
         echo "Making \"${png}\" ..."
+
+        # Make PNG ...
         convert "${ppm}" "${png}"
         optipng -strip all "${png}"
+    fi
+
+    # Check if the PPM needs removing ...
+    if [[ -f ${png} ]]; then
+        echo "Removing \"${ppm}\" ..."
+
+        # Remove PPM ...
         rm "${ppm}"
     fi
-fi
+done
 
 # Loop over PPM images ...
 for ppm in output/*.ppm; do
