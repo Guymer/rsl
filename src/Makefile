@@ -5,7 +5,7 @@
 DEBUG     ?= false
 FTNLIB    ?= $(abspath ../fortranlib)
 DEBG_OPTS := -g -fcheck=all
-LANG_OPTS := -ffree-form -ffree-line-length-none -frecursive -fno-unsafe-math-optimizations -frounding-math -fsignaling-nans -fPIC
+LANG_OPTS := -fopenmp -ffree-form -ffree-line-length-none -frecursive -fno-unsafe-math-optimizations -frounding-math -fsignaling-nans -fPIC
 WARN_OPTS := -Wall -Wextra -Waliasing -Wcharacter-truncation -Wconversion-extra -Wimplicit-interface -Wimplicit-procedure -Wunderflow -Wtabs
 OPTM_OPTS := -O2
 MACH_OPTS := -march=native -m64
@@ -118,7 +118,7 @@ convertBINtoPPM.o:	$(FTNLIB)/mod_safe.mod										\
 createFlood.o:		$(FTNLIB)/mod_safe.mod										\
 					mod_funcs.mod												\
 					createFlood.F90
-	$(FC) -c -fopenmp $(LANG_OPTS) $(WARN_OPTS) $(OPTM_OPTS) $(MACH_OPTS) -I$(FTNLIB) createFlood.F90 -o $@
+	$(FC) -c $(LANG_OPTS) $(WARN_OPTS) $(OPTM_OPTS) $(MACH_OPTS) -I$(FTNLIB) createFlood.F90 -o $@
 
 downscale.o:		$(FTNLIB)/mod_safe.mod										\
 					downscale.F90
@@ -131,7 +131,7 @@ convertBINtoPPM:	$(FTNLIB)/mod_safe.o										\
 createFlood:		$(FTNLIB)/mod_safe.o										\
 					mod_funcs.o													\
 					createFlood.o
-	$(FC) -fopenmp $(LANG_OPTS) $(WARN_OPTS) $(OPTM_OPTS) $(MACH_OPTS) createFlood.o $(FTNLIB)/mod_safe.o mod_funcs.o -o $@
+	$(FC) $(LANG_OPTS) $(WARN_OPTS) $(OPTM_OPTS) $(MACH_OPTS) createFlood.o $(FTNLIB)/mod_safe.o mod_funcs.o -o $@
 
 downscale:			$(FTNLIB)/mod_safe.o										\
 					downscale.o
