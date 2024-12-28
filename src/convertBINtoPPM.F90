@@ -26,7 +26,7 @@ PROGRAM main
     elev = elev / 1300.0e0_REAL32
 
     ! Save scaled map ...
-    CALL sub_save_array_as_PPM(elev, "../terr50_gagg_gb.ppm", "jet")
+    CALL sub_save_array_as_PPM(nx, ny, elev, "../terr50_gagg_gb.ppm", "jet")
 
     ! Clean up ...
     DEALLOCATE(elev)
@@ -41,7 +41,7 @@ PROGRAM main
     elev = elev / 1300.0e0_REAL32
 
     ! Save scaled map ...
-    CALL sub_save_array_as_PPM(elev, "../terr50_gagg_gb_2x.ppm", "jet")
+    CALL sub_save_array_as_PPM(nx / 2_INT64, ny / 2_INT64, elev, "../terr50_gagg_gb_2x.ppm", "jet")
 
     ! Clean up ...
     DEALLOCATE(elev)
@@ -56,7 +56,7 @@ PROGRAM main
     elev = elev / 1300.0e0_REAL32
 
     ! Save scaled map ...
-    CALL sub_save_array_as_PPM(elev, "../terr50_gagg_gb_4x.ppm", "jet")
+    CALL sub_save_array_as_PPM(nx / 4_INT64, ny / 4_INT64, elev, "../terr50_gagg_gb_4x.ppm", "jet")
 
     ! Clean up ...
     DEALLOCATE(elev)
@@ -71,7 +71,7 @@ PROGRAM main
     elev = elev / 1300.0e0_REAL32
 
     ! Save scaled map ...
-    CALL sub_save_array_as_PPM(elev, "../terr50_gagg_gb_8x.ppm", "jet")
+    CALL sub_save_array_as_PPM(nx / 8_INT64, ny / 8_INT64, elev, "../terr50_gagg_gb_8x.ppm", "jet")
 
     ! Clean up ...
     DEALLOCATE(elev)
@@ -86,7 +86,7 @@ PROGRAM main
     elev = elev / 1300.0e0_REAL32
 
     ! Save scaled map ...
-    CALL sub_save_array_as_PPM(elev, "../terr50_gagg_gb_75x.ppm", "jet")
+    CALL sub_save_array_as_PPM(nx / 75_INT64, ny / 75_INT64, elev, "../terr50_gagg_gb_75x.ppm", "jet")
 
     ! Clean up ...
     DEALLOCATE(elev)

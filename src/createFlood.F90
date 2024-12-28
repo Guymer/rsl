@@ -21,6 +21,7 @@ PROGRAM main
     LOGICAL(kind = INT8), ALLOCATABLE, DIMENSION(:, :)                          :: atRisk
     LOGICAL(kind = INT8), ALLOCATABLE, DIMENSION(:, :)                          :: flooded
     INTEGER(kind = INT64)                                                       :: iSeaLevel
+    INTEGER(kind = INT64), ALLOCATABLE, DIMENSION(:)                            :: tot
     REAL(kind = REAL32)                                                         :: seaLevel
     REAL(kind = REAL32), ALLOCATABLE, DIMENSION(:, :)                           :: elev
 
@@ -73,15 +74,17 @@ PROGRAM main
         seaLevel = REAL(iSeaLevel, kind = REAL32)                               ! [m]
         atRisk = elev <= seaLevel
 
-        ! Raise the sea level ...
+        ! Raise the sea level and clean up ...
         CALL sub_flood_array(                                                   &
                    nx = nx,                                                     &
                    ny = ny,                                                     &
                  elev = elev,                                                   &
              seaLevel = seaLevel,                                               &
               flooded = flooded,                                                &
-            tileScale = tileScale                                               &
+            tileScale = tileScale,                                              &
+                  tot = tot                                                     &
         )
+        DEALLOCATE(tot)
 
         ! Create file name and save shrunk final flood ...
         WRITE(iname, '("../output/", i4.4, "m.ppm")') iSeaLevel
