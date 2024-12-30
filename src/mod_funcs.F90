@@ -1,7 +1,7 @@
 MODULE mod_funcs
     CONTAINS
 
-    SUBROUTINE saveArray(shrunkAtRisk, shrunkFlooded, fname)
+    SUBROUTINE saveArray(nx, ny, shrunkAtRisk, shrunkFlooded, imageName)
         ! NOTE: This is a copy of "sub_save_2D_REAL32_real_array_as_PPM()" from
         !       "mod_safe", the only modification is to be hard-coded to be
         !       indexed to either red, green or blue:
@@ -16,9 +16,11 @@ MODULE mod_funcs
         IMPLICIT NONE
 
         ! Declare inputs/outputs ...
-        CHARACTER(len = *), INTENT(in)                                          :: fname
-        REAL(kind = REAL32), DIMENSION(:, :), INTENT(in)                        :: shrunkAtRisk
-        REAL(kind = REAL32), DIMENSION(:, :), INTENT(in)                        :: shrunkFlooded
+        INTEGER(kind = INT64), INTENT(in)                                       :: nx
+        INTEGER(kind = INT64), INTENT(in)                                       :: ny
+        REAL(kind = REAL32), DIMENSION(nx, ny), INTENT(in)                      :: shrunkAtRisk
+        REAL(kind = REAL32), DIMENSION(nx, ny), INTENT(in)                      :: shrunkFlooded
+        CHARACTER(len = *), INTENT(in)                                          :: imageName
 
         ! Declare FORTRAN variables ...
         CHARACTER(len = 256)                                                    :: errmsg
@@ -30,12 +32,6 @@ MODULE mod_funcs
         CHARACTER(len = 19)                                                     :: hdr
         INTEGER(kind = INT64)                                                   :: ix
         INTEGER(kind = INT64)                                                   :: iy
-        INTEGER(kind = INT64)                                                   :: nx
-        INTEGER(kind = INT64)                                                   :: ny
-
-        ! Find size of image ...
-        nx = SIZE(shrunkFlooded, dim = 1, kind = INT64)
-        ny = SIZE(shrunkFlooded, dim = 2, kind = INT64)
 
         ! Make header ...
         WRITE(hdr, fmt = '("P6 ", i5, " ", i5, " 255 ")') nx, ny
@@ -63,7 +59,7 @@ MODULE mod_funcs
         OPEN(                                                                   &
              access = "stream",                                                 &
              action = "write",                                                  &
-               file = TRIM(fname),                                              &
+               file = TRIM(imageName),                                          &
                form = "unformatted",                                            &
               iomsg = errmsg,                                                   &
              iostat = errnum,                                                   &
@@ -87,12 +83,13 @@ MODULE mod_funcs
         DEALLOCATE(img)
     END SUBROUTINE saveArray
 
-    SUBROUTINE saveShrunkFlood(nx, ny, atRisk, flooded, imageScale, iname)
+    SUBROUTINE saveShrunkFlood(nx, ny, atRisk, flooded, imageScale, imageName)
         ! Import standard modules ...
         USE ISO_FORTRAN_ENV
 
         ! Import my modules ...
-        USE mod_safe,       ONLY:   sub_allocate_array
+        USE mod_safe,       ONLY:   sub_allocate_array,                         &
+                                    sub_shrink_array
 
         IMPLICIT NONE
 
@@ -102,74 +99,36 @@ MODULE mod_funcs
         LOGICAL(kind = INT8), DIMENSION(nx, ny), INTENT(in)                     :: atRisk
         LOGICAL(kind = INT8), DIMENSION(nx, ny), INTENT(in)                     :: flooded
         INTEGER(kind = INT64), INTENT(in)                                       :: imageScale
-        CHARACTER(len = *), INTENT(in)                                          :: iname
+        CHARACTER(len = *), INTENT(in)                                          :: imageName
 
         ! Declare variables ...
-        INTEGER(kind = INT64)                                                   :: ix
-        INTEGER(kind = INT64)                                                   :: ixlo
-        INTEGER(kind = INT64)                                                   :: ixhi
-        INTEGER(kind = INT64)                                                   :: iy
-        INTEGER(kind = INT64)                                                   :: iylo
-        INTEGER(kind = INT64)                                                   :: iyhi
         REAL(kind = REAL32), ALLOCATABLE, DIMENSION(:, :)                       :: shrunkAtRisk
         REAL(kind = REAL32), ALLOCATABLE, DIMENSION(:, :)                       :: shrunkFlooded
 
-        ! Check imageScale ...
-        IF(MOD(nx, imageScale) /= 0_INT64)THEN
-            WRITE(fmt = '("ERROR: ", a, ".")', unit = ERROR_UNIT) '"nx" is not an integer multiple of "imageScale"'
-            FLUSH(unit = ERROR_UNIT)
-            STOP
-        END IF
-        IF(MOD(ny, imageScale) /= 0_INT64)THEN
-            WRITE(fmt = '("ERROR: ", a, ".")', unit = ERROR_UNIT) '"ny" is not an integer multiple of "imageScale"'
-            FLUSH(unit = ERROR_UNIT)
-            STOP
-        END IF
-
-        ! Allocate array ...
-        CALL sub_allocate_array(shrunkAtRisk, "shrunkAtRisk", nx / imageScale, ny / imageScale, .TRUE._INT8)
-        CALL sub_allocate_array(shrunkFlooded, "shrunkFlooded", nx / imageScale, ny / imageScale, .TRUE._INT8)
-
-        ! Loop over x-axis tiles ...
-        DO ix = 1_INT64, nx / imageScale
-            ! Find the extent of the tile ...
-            ixlo = (ix - 1_INT64) * imageScale + 1_INT64
-            ixhi =  ix            * imageScale
-
-            ! Loop over y-axis tiles ...
-            DO iy = 1_INT64, ny / imageScale
-                ! Find the extent of the tile ...
-                iylo = (iy - 1_INT64) * imageScale + 1_INT64
-                iyhi =  iy            * imageScale
-
-                ! Find total risk ...
-                ! NOTE: Within shrunkAtRisk:
-                !         *          0.0          = not at risk = GREEN/BLUE
-                !         * imageScale*imageScale =   at risk   = RED
-                shrunkAtRisk(ix, iy) = REAL(COUNT(atRisk(ixlo:ixhi, iylo:iyhi), kind = INT64), kind = REAL32)
-
-                ! Find total flood ...
-                ! NOTE: Within shrunkFlooded:
-                !         *          0.0          = not flooded = GREEN/RED
-                !         * imageScale*imageScale =   flooded   = BLUE
-                shrunkFlooded(ix, iy) = REAL(COUNT(flooded(ixlo:ixhi, iylo:iyhi), kind = INT64), kind = REAL32)
-            END DO
-        END DO
-
-        ! Convert total risk to average risk ...
-        ! NOTE: Within shrunkAtRisk:
-        !         * 0.0 = not at risk = GREEN/BLUE
-        !         * 1.0 =   at risk   = RED
-        shrunkAtRisk = shrunkAtRisk / REAL(imageScale * imageScale, kind = REAL32)
-
-        ! Convert total flood to average flood ...
-        ! NOTE: Within shrunkFlooded:
-        !         * 0.0 = not flooded = GREEN/RED
-        !         * 1.0 =   flooded   = BLUE
-        shrunkFlooded = shrunkFlooded / REAL(imageScale * imageScale, kind = REAL32)
+        ! Shrink the logical arrays down to real arrays ..
+        CALL sub_shrink_array(                                                  &
+                     nx = nx,                                                   &
+                     ny = ny,                                                   &
+                    arr = atRisk,                                               &
+            shrinkScale = imageScale,                                           &
+            shrunkenArr = shrunkAtRisk                                          &
+        )
+        CALL sub_shrink_array(                                                  &
+                     nx = nx,                                                   &
+                     ny = ny,                                                   &
+                    arr = flooded,                                              &
+            shrinkScale = imageScale,                                           &
+            shrunkenArr = shrunkFlooded                                         &
+        )
 
         ! Save shrunk flood ...
-        CALL saveArray(shrunkAtRisk, shrunkFlooded, iname)
+        CALL saveArray(                                                         &
+                       nx = nx / imageScale,                                    &
+                       ny = ny / imageScale,                                    &
+             shrunkAtRisk = shrunkAtRisk,                                       &
+            shrunkFlooded = shrunkFlooded,                                      &
+                imageName = imageName                                           &
+        )
 
         ! Clean up ...
         DEALLOCATE(shrunkAtRisk)

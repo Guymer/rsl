@@ -17,7 +17,7 @@ PROGRAM main
     INTEGER(kind = INT64), PARAMETER                                            :: tileScale = 50_INT64
 
     ! Declare variables ...
-    CHARACTER(len = 19)                                                         :: iname
+    CHARACTER(len = 19)                                                         :: imageName
     LOGICAL(kind = INT8), ALLOCATABLE, DIMENSION(:, :)                          :: atRisk
     LOGICAL(kind = INT8), ALLOCATABLE, DIMENSION(:, :)                          :: flooded
     INTEGER(kind = INT64)                                                       :: iSeaLevel
@@ -30,18 +30,6 @@ PROGRAM main
     INTEGER(kind = INT32)                                                       :: errnum
 
     ! **************************************************************************
-
-    ! Check imageScale ...
-    IF(MOD(nx, imageScale) /= 0_INT64)THEN
-        WRITE(fmt = '("ERROR: ", a, ".")', unit = ERROR_UNIT) '"nx" is not an integer multiple of "imageScale"'
-        FLUSH(unit = ERROR_UNIT)
-        STOP
-    END IF
-    IF(MOD(ny, imageScale) /= 0_INT64)THEN
-        WRITE(fmt = '("ERROR: ", a, ".")', unit = ERROR_UNIT) '"ny" is not an integer multiple of "imageScale"'
-        FLUSH(unit = ERROR_UNIT)
-        STOP
-    END IF
 
     ! Ensure that the output directory exists ...
     CALL EXECUTE_COMMAND_LINE("mkdir -p ../output", CMDMSG = errmsg, EXITSTAT = errnum)
@@ -87,8 +75,15 @@ PROGRAM main
         DEALLOCATE(tot)
 
         ! Create file name and save shrunk final flood ...
-        WRITE(iname, '("../output/", i4.4, "m.ppm")') iSeaLevel
-        CALL saveShrunkFlood(nx, ny, atRisk, flooded, imageScale, iname)
+        WRITE(imageName, '("../output/", i4.4, "m.ppm")') iSeaLevel
+        CALL saveShrunkFlood(                                                   &
+                    nx = nx,                                                    &
+                    ny = ny,                                                    &
+                atRisk = atRisk,                                                &
+               flooded = flooded,                                               &
+            imageScale = imageScale,                                            &
+             imageName = imageName                                              &
+        )
     END DO
 
     ! Clean up ...
