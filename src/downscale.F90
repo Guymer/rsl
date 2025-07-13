@@ -15,66 +15,56 @@ PROGRAM main
     INTEGER(kind = INT64), PARAMETER                                            :: ny = 24600_INT64
 
     ! Declare variables ...
+    CHARACTER(len = 256)                                                        :: fName
+    INTEGER(kind = INT64)                                                       :: shrinkScale
     REAL(kind = REAL32), ALLOCATABLE, DIMENSION(:, :)                           :: elev
     REAL(kind = REAL32), ALLOCATABLE, DIMENSION(:, :)                           :: shrunkenElev
 
     ! **************************************************************************
 
     ! Allocate (1.21 GiB) array and populate it ...
-    CALL sub_allocate_array(elev, "elev", nx, ny, .TRUE._INT8)
-    CALL sub_load_array_from_BIN(elev, "../terr50_gagg_gb.bin")                 ! [m]
+    CALL sub_allocate_array(                                                    &
+        elev,                                                                   &
+        "elev",                                                                 &
+        nx,                                                                     &
+        ny,                                                                     &
+        .TRUE._INT8                                                             &
+    )
+    CALL sub_load_array_from_BIN(                                               &
+        elev,                                                                   &
+        "../terr50_gagg_gb.bin"                                                 &
+    )                                                                           ! [m]
 
     ! **************************************************************************
 
-    ! Shrink by 2x array and save it ...
-    CALL sub_shrink_array(                                                      &
-                 nx = nx,                                                       &
-                 ny = ny,                                                       &
-                arr = elev,                                                     &
-        shrinkScale = 2_INT64,                                                  &
-        shrunkenArr = shrunkenElev                                              &
-    )
-    CALL sub_save_array_as_BIN(shrunkenElev, "../terr50_gagg_gb_2x.bin")
-    DEALLOCATE(shrunkenElev)
+    ! Loop over possible shrink scales ...
+    DO shrinkScale = 2_INT64, MIN(nx, ny) / 2_INT64
+        ! Skip this shrink scale if it is not an integer division of both axes
+        ! of the array ...
+        IF(MODULO(nx, shrinkScale) /= 0_INT64)THEN
+            CYCLE
+        END IF
+        IF(MODULO(ny, shrinkScale) /= 0_INT64)THEN
+            CYCLE
+        END IF
 
-    ! **************************************************************************
+        ! Create file name ...
+        WRITE(fName, '("../terr50_gagg_gb_", i3.3, "x.bin")') shrinkScale
 
-    ! Shrink by 4x array and save it ...
-    CALL sub_shrink_array(                                                      &
-                 nx = nx,                                                       &
-                 ny = ny,                                                       &
-                arr = elev,                                                     &
-        shrinkScale = 4_INT64,                                                  &
-        shrunkenArr = shrunkenElev                                              &
-    )
-    CALL sub_save_array_as_BIN(shrunkenElev, "../terr50_gagg_gb_4x.bin")
-    DEALLOCATE(shrunkenElev)
-
-    ! **************************************************************************
-
-    ! Shrink by 8x array and save it ...
-    CALL sub_shrink_array(                                                      &
-                 nx = nx,                                                       &
-                 ny = ny,                                                       &
-                arr = elev,                                                     &
-        shrinkScale = 8_INT64,                                                  &
-        shrunkenArr = shrunkenElev                                              &
-    )
-    CALL sub_save_array_as_BIN(shrunkenElev, "../terr50_gagg_gb_8x.bin")
-    DEALLOCATE(shrunkenElev)
-
-    ! **************************************************************************
-
-    ! Shrink by 75x array and save it ...
-    CALL sub_shrink_array(                                                      &
-                 nx = nx,                                                       &
-                 ny = ny,                                                       &
-                arr = elev,                                                     &
-        shrinkScale = 75_INT64,                                                 &
-        shrunkenArr = shrunkenElev                                              &
-    )
-    CALL sub_save_array_as_BIN(shrunkenElev, "../terr50_gagg_gb_75x.bin")
-    DEALLOCATE(shrunkenElev)
+        ! Shrink array, save it and clean up ...
+        CALL sub_shrink_array(                                                  &
+                     nx = nx,                                                   &
+                     ny = ny,                                                   &
+                    arr = elev,                                                 &
+            shrinkScale = shrinkScale,                                          &
+            shrunkenArr = shrunkenElev                                          &
+        )                                                                       ! [m]
+        CALL sub_save_array_as_BIN(                                             &
+            shrunkenElev,                                                       &
+            TRIM(fName)                                                         &
+        )
+        DEALLOCATE(shrunkenElev)
+    END DO
 
     ! **************************************************************************
 
