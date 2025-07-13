@@ -78,12 +78,11 @@ all:				compile
 
 # "gmake -r clean"   = removes the compiled code
 clean:
-	$(RM) -f convertBINtoPPM createFlood downscale *.a *.gcda *.gcno *.mod *.o *.so
+	$(RM) -f createFlood downscale *.a *.gcda *.gcno *.mod *.o *.so
 	$(MAKE) -r -C $(FTNLIB) COVERAGE=$(COVERAGE) DEBUG=$(DEBUG) FC=$(FC) PYTHON3=$(PYTHON3) clean
 
 # "gmake -r compile" = compiles the code
-compile:			convertBINtoPPM												\
-					createFlood													\
+compile:			createFlood													\
 					downscale
 
 # "gmake -r help"    = print this help
@@ -130,10 +129,6 @@ mod_funcs.o &:		$(FTNLIB)/mod_safe.mod										\
 	$(FC) -c $(LANG_OPTS) $(WARN_OPTS) $(MACH_OPTS) -I$(FTNLIB) mod_funcs.F90
 	$(AR) -r libmod_funcs.a mod_funcs.o
 
-convertBINtoPPM.o:	$(FTNLIB)/mod_safe.mod										\
-					convertBINtoPPM.F90
-	$(FC) -c $(LANG_OPTS) $(WARN_OPTS) $(MACH_OPTS) -I$(FTNLIB) convertBINtoPPM.F90 -o $@
-
 createFlood.o:		$(FTNLIB)/mod_safe.mod										\
 					mod_funcs.mod												\
 					createFlood.F90
@@ -142,10 +137,6 @@ createFlood.o:		$(FTNLIB)/mod_safe.mod										\
 downscale.o:		$(FTNLIB)/mod_safe.mod										\
 					downscale.F90
 	$(FC) -c $(LANG_OPTS) $(WARN_OPTS) $(MACH_OPTS) -I$(FTNLIB) downscale.F90 -o $@
-
-convertBINtoPPM:	$(FTNLIB)/mod_safe.o										\
-					convertBINtoPPM.o
-	$(FC) $(LANG_OPTS) $(WARN_OPTS) $(MACH_OPTS) convertBINtoPPM.o $(FTNLIB)/mod_safe.o -o $@
 
 createFlood:		$(FTNLIB)/mod_safe.o										\
 					mod_funcs.o													\

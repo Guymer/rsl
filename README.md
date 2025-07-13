@@ -9,9 +9,9 @@ This project aims to map the effects of rising sea levels on Great Britain.
 1. Download for yourself [the "OS Terrain 50" dataset](https://www.ordnancesurvey.co.uk/products/os-terrain-50), in the "ASCII Grid and GML (Grid)" file format, from the Ordnance Survey to provide the "terr50_gagg_gb.zip" file that is used here
 2. Convert the ZIP file of [the "OS Terrain 50" dataset](https://www.ordnancesurvey.co.uk/products/os-terrain-50) to a BIN file (by running [step2_convertZIPtoBIN.py](step2_convertZIPtoBIN.py))
 3. Compile the FORTRAN programs (by running [src/Makefile](src/Makefile))
-4. Create an elevation map of Great Britain (by running [src/convertBINtoPPM](src/convertBINtoPPM.F90))
+4. Downscale Great Britain for easier viewing (by running [src/downscale](src/downscale.F90))
 5. Flood Great Britain (by running [src/createFlood](src/createFlood.F90))
-6. Convert all generated PPM images to PNG images (by running [step6_convertPPMtoPNG.sh](step6_convertPPMtoPNG.sh))
+6. Convert all generated BIN files to PNG images (by running [step6_convertBINtoPNG.py](step6_convertBINtoPNG.py))
 7. Convert the sequence of PNG images to a MP4 video (by running [step7_convertPNGtoMP4.py](step7_convertPNGtoMP4.py))
 8. Convert the sequence of PNG images to a WEBP animation (by running [step8_convertPNGtoWEBP.py](step8_convertPNGtoWEBP.py))
 
