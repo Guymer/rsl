@@ -37,6 +37,7 @@ downscale
 *.zip
 
 # Hide output files ...
+step9.png
 terr50_gagg_gb_???x.png
 output/*.csv
 output/*.png
