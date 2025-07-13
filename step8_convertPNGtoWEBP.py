@@ -29,7 +29,7 @@ if __name__ == "__main__":
     font = PIL.ImageFont.truetype("SFNSMono.ttf", 72)
 
     # Find the frames ...
-    frames = sorted(glob.glob("output/????m_???x.png"))
+    frames = sorted(glob.glob("output/????m_010x.png"))
 
     # Make images with the sea level overlaid ...
     images = []
