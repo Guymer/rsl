@@ -38,7 +38,7 @@ PROGRAM main
     ! **************************************************************************
 
     ! Loop over possible shrink scales ...
-    DO shrinkScale = 2_INT64, MIN(nx, ny) / 2_INT64
+    DO shrinkScale = 2_INT64, MIN(nx, ny) / 2_INT64, 1_INT64
         ! Skip this shrink scale if it is not an integer division of both axes
         ! of the array ...
         IF(MODULO(nx, shrinkScale) /= 0_INT64)THEN
