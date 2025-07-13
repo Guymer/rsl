@@ -35,12 +35,9 @@ downscale
 *.mp4
 *.out
 *.webp
-terr50_cesh_gb.*
-terr50_gagg_gb.*
-terr50_gagg_gb_?x.*
-terr50_gagg_gb_??x.*
+*.zip
 
 # Hide output files ...
+terr50_gagg_gb_???x.png
 output/*.csv
 output/*.png
-output/*.ppm
