@@ -26,7 +26,6 @@ shellcheck.log
 *.o
 *.so
 *.so.dSYM
-convertBINtoPPM
 createFlood
 downscale
 
