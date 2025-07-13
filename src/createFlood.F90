@@ -77,7 +77,7 @@ PROGRAM main
         )
 
         ! Create file name, write out the convergence and clean up ...
-        WRITE(logName, '("../output/", i4.4, "m.csv")') iSeaLevel
+        WRITE(logName, '("../output/", i4.4, "_", i3.3, "x.csv")') iSeaLevel, imageScale
         OPEN(                                                                   &
              action = "write",                                                  &
                file = TRIM(logName),                                            &
@@ -105,7 +105,7 @@ PROGRAM main
         DEALLOCATE(tot)
 
         ! Create file name and save shrunk final flood ...
-        WRITE(imageName, '("../output/", i4.4, "m.bin")') iSeaLevel
+        WRITE(imageName, '("../output/", i4.4, "m_", i3.3, "x.bin")') iSeaLevel, imageScale
         CALL saveShrunkFlood(                                                   &
                     nx = nx,                                                    &
                     ny = ny,                                                    &
