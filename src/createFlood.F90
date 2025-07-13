@@ -17,9 +17,11 @@ PROGRAM main
     INTEGER(kind = INT64), PARAMETER                                            :: tileScale = 50_INT64
 
     ! Declare variables ...
-    CHARACTER(len = 19)                                                         :: imageName
+    CHARACTER(len = 256)                                                        :: imageName
+    CHARACTER(len = 256)                                                        :: logName
     LOGICAL(kind = INT8), ALLOCATABLE, DIMENSION(:, :)                          :: atRisk
     LOGICAL(kind = INT8), ALLOCATABLE, DIMENSION(:, :)                          :: flooded
+    INTEGER(kind = INT64)                                                       :: iIter
     INTEGER(kind = INT64)                                                       :: iSeaLevel
     INTEGER(kind = INT64), ALLOCATABLE, DIMENSION(:)                            :: tot
     REAL(kind = REAL32)                                                         :: seaLevel
@@ -28,6 +30,7 @@ PROGRAM main
     ! Declare FORTRAN variables ...
     CHARACTER(len = 256)                                                        :: errmsg
     INTEGER(kind = INT32)                                                       :: errnum
+    INTEGER(kind = INT32)                                                       :: funit
 
     ! **************************************************************************
 
@@ -62,7 +65,7 @@ PROGRAM main
         seaLevel = REAL(iSeaLevel, kind = REAL32)                               ! [m]
         atRisk = elev <= seaLevel
 
-        ! Raise the sea level and clean up ...
+        ! Raise the sea level ...
         CALL sub_flood_array(                                                   &
                    nx = nx,                                                     &
                    ny = ny,                                                     &
@@ -72,17 +75,44 @@ PROGRAM main
             tileScale = tileScale,                                              &
                   tot = tot                                                     &
         )
+
+        ! Create file name, write out the convergence and clean up ...
+        WRITE(logName, '("../output/", i4.4, "m.csv")') iSeaLevel
+        OPEN(                                                                   &
+             action = "write",                                                  &
+               file = TRIM(logName),                                            &
+               form = "formatted",                                              &
+              iomsg = errmsg,                                                   &
+             iostat = errnum,                                                   &
+            newunit = funit,                                                    &
+             status = "replace"                                                 &
+        )
+        IF(errnum /= 0_INT32)THEN
+            WRITE(fmt = '("ERROR: ", a, ". ERRMSG = ", a, ". ERRNUM = ", i3, ".")', unit = ERROR_UNIT) "Failed to open CSV", TRIM(errmsg), errnum
+            FLUSH(unit = ERROR_UNIT)
+            STOP
+        END IF
+        WRITE(fmt = '(a)', unit = funit) "iteration,pixels allowed"
+        FLUSH(unit = funit)
+        DO iIter = LBOUND(tot, dim = 1, kind = INT64), UBOUND(tot, dim = 1, kind = INT64), 1_INT64
+            IF(tot(iIter) == 0_INT64)THEN
+                EXIT
+            END IF
+            WRITE(fmt = '(i3, ",", i9)', unit = funit) iIter, tot(iIter)
+            FLUSH(unit = funit)
+        END DO
+        CLOSE(unit = funit)
         DEALLOCATE(tot)
 
         ! Create file name and save shrunk final flood ...
-        WRITE(imageName, '("../output/", i4.4, "m.ppm")') iSeaLevel
+        WRITE(imageName, '("../output/", i4.4, "m.bin")') iSeaLevel
         CALL saveShrunkFlood(                                                   &
                     nx = nx,                                                    &
                     ny = ny,                                                    &
                 atRisk = atRisk,                                                &
                flooded = flooded,                                               &
             imageScale = imageScale,                                            &
-             imageName = imageName                                              &
+             imageName = TRIM(imageName)                                        &
         )
     END DO
 
