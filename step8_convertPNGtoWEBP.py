@@ -18,6 +18,12 @@ if __name__ == "__main__":
     # Find the frames ...
     frames = sorted(glob.glob("output/????m.png"))
 
+    # Extract sea level from file name and make title and make PNG ...
+    # str="${ppm%.ppm}"
+    # str="${str#output/}"
+    # str="${str:0:1},${str:1:5} sea level rise"
+    # convert "${ppm}" -gravity north -stroke none -fill white -font Courier -pointsize 72 -annotate 0 "${str}" "${png}"
+
     # **************************************************************************
 
     print("Making \"createFlood.webp\" ...")
