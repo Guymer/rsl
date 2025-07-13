@@ -9,6 +9,16 @@ if __name__ == "__main__":
     import platform
     import shutil
 
+    # Import special modules ...
+    try:
+        import PIL
+        import PIL.Image
+        import PIL.ImageDraw
+        import PIL.ImageFont
+        PIL.Image.MAX_IMAGE_PIXELS = 1024 * 1024 * 1024                         # [px]
+    except:
+        raise Exception("\"PIL\" is not installed; run \"pip install --user Pillow\"") from None
+
     # Import my modules ...
     try:
         import pyguymer3
@@ -53,14 +63,27 @@ if __name__ == "__main__":
 
     # **************************************************************************
 
-    # Find the frames ...
-    frames = sorted(glob.glob("output/????m.png"))
+    # Create short-hand ...
+    font = PIL.ImageFont.truetype("SFNSMono.ttf", 72)
 
-    # Extract sea level from file name and make title and make PNG ...
-    # str="${ppm%.ppm}"
-    # str="${str#output/}"
-    # str="${str:0:1},${str:1:5} sea level rise"
-    # convert "${ppm}" -gravity north -stroke none -fill white -font Courier -pointsize 72 -annotate 0 "${str}" "${png}"
+    # Find the frames ...
+    frames = sorted(glob.glob("output/????m_???x.png"))
+
+    # Make images with the sea level overlaid ...
+    images = []
+    for frame in frames:
+        level = int(frame.split("/")[1].split("_")[0].removesuffix("m"))        # [m]
+        with PIL.Image.open(frame) as iObj:
+            image = iObj.convert("RGB")
+        draw = PIL.ImageDraw.Draw(image)
+        draw.text(
+            (image.size[0] - 100, 100),
+            f"{level:,d} m sea level rise",
+            anchor = "rs",
+              fill = (255, 255, 255),
+              font = font,
+        )
+        images.append(image)
 
     # **************************************************************************
 
@@ -68,7 +91,7 @@ if __name__ == "__main__":
 
     # Save 25fps MP4 ...
     vname = pyguymer3.media.images2mp4(
-        frames,
+        images,
               debug = args.debug,
         ffprobePath = args.ffprobePath,
          ffmpegPath = args.ffmpegPath,
@@ -88,7 +111,7 @@ if __name__ == "__main__":
 
         # Save 25fps MP4 ...
         vname = pyguymer3.media.images2mp4(
-            frames,
+            images,
                    debug = args.debug,
              ffprobePath = args.ffprobePath,
               ffmpegPath = args.ffmpegPath,
