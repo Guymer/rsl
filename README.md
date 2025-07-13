@@ -1,6 +1,6 @@
 # Rising Sea Levels (RSL)
 
-!["gmake" GitHub Action Status](https://github.com/Guymer/rsl/actions/workflows/gmake.yaml/badge.svg) !["mypy" GitHub Action Status](https://github.com/Guymer/rsl/actions/workflows/mypy.yaml/badge.svg) !["pylint" GitHub Action Status](https://github.com/Guymer/rsl/actions/workflows/pylint.yaml/badge.svg) !["shellcheck" GitHub Action Status](https://github.com/Guymer/rsl/actions/workflows/shellcheck.yaml/badge.svg)
+!["gmake" GitHub Action Status](https://github.com/Guymer/rsl/actions/workflows/gmake.yaml/badge.svg) !["mypy" GitHub Action Status](https://github.com/Guymer/rsl/actions/workflows/mypy.yaml/badge.svg) !["pylint" GitHub Action Status](https://github.com/Guymer/rsl/actions/workflows/pylint.yaml/badge.svg)
 
 This project aims to map the effects of rising sea levels on Great Britain.
 
