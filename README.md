@@ -14,6 +14,7 @@ This project aims to map the effects of rising sea levels on Great Britain.
 6. Convert all generated BIN files to PNG images (by running [step6_convertBINtoPNG.py](step6_convertBINtoPNG.py))
 7. Convert the sequence of PNG images to a MP4 video (by running [step7_convertPNGtoMP4.py](step7_convertPNGtoMP4.py))
 8. Convert the sequence of PNG images to a WEBP animation (by running [step8_convertPNGtoWEBP.py](step8_convertPNGtoWEBP.py))
+9. Plot the convergence of [src/createFlood](src/createFlood.F90) (by running [step9_convergence.py](step9_convergence.py))
 
 ## Method
 
