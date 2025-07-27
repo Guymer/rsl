@@ -1,0 +1,16 @@
+# Make sure that only the Python module part of the Git repository is included
+# in the installation ...
+exclude .editorconfig
+exclude .github/*
+exclude .github/*/*
+exclude .gitignore
+exclude .gitmodules
+exclude .mypy.ini
+exclude .pylintrc
+exclude .shellcheckrc
+exclude *.png
+exclude *.py
+exclude fortranlib/*/*.py
+exclude requirements.txt
+exclude src/*.F90
+exclude src/Makefile

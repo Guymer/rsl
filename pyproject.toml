@@ -46,3 +46,6 @@ Issues = "https://github.com/Guymer/rsl/issues"
 Funding = "https://github.com/sponsors/Guymer"
 
 [tool.setuptools_scm]
+
+[tool.setuptools.packages.find]
+where = ["."]                           # Required because I have a "src" directory.
