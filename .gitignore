@@ -26,7 +26,9 @@ shellcheck.log
 *.o
 *.so
 *.so.dSYM
+RSL.egg-info
 createFlood
+dist
 downscale
 
 # Hide large datasets ...
