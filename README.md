@@ -26,6 +26,7 @@ RSL requires the following Python modules to be installed and available in your 
 
 * [cartopy](https://pypi.org/project/Cartopy/)
 * [numpy](https://pypi.org/project/numpy/)
+* [PIL](https://pypi.org/project/Pillow/)
 * [pyguymer3](https://github.com/Guymer/PyGuymer3)
 * [shapefile](https://pypi.org/project/pyshp/)
 
