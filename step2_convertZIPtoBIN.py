@@ -29,7 +29,11 @@ if __name__ == "__main__":
         raise Exception("\"numpy\" is not installed; run \"pip install --user numpy\"") from None
 
     # Import my modules ...
-    import rsl
+    try:
+        import pyguymer3
+        import pyguymer3.osterrain
+    except:
+        raise Exception("\"pyguymer3\" is not installed; run \"pip install --user PyGuymer3\"") from None
 
     # **************************************************************************
 
@@ -37,7 +41,7 @@ if __name__ == "__main__":
     zname = "terr50_gagg_gb.zip"
 
     # Find extent of the "OS Terrain 50" dataset ...
-    x1, x2, y1, y2 = rsl.findExtent(zname)
+    x1, x2, y1, y2 = pyguymer3.osterrain.findExtent(zname)
 
     # Set array sizes ...
     nx = x2 - x1
@@ -71,8 +75,8 @@ if __name__ == "__main__":
                 ascObj = io.BytesIO(fObj1.read(f"{key}.asc"))
 
                 # Load header and contents of ASCII dataset ...
-                hdr = rsl.loadASCIIheader(ascObj)
-                cont = rsl.loadASCIIcontents(ascObj, hdr["length"])             # [m]
+                hdr = pyguymer3.osterrain.loadASCIIheader(ascObj)
+                cont = pyguymer3.osterrain.loadASCIIcontents(ascObj, hdr["length"]) # [m]
 
                 # Determine indexes (from the upper-left corner not the
                 # lower-left corner) ...
