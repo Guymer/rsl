@@ -19,7 +19,6 @@ if __name__ == "__main__":
 
     # Import standard modules ...
     import io
-    import os
     import pathlib
     import re
     import zipfile
