@@ -10,6 +10,7 @@
 .shellcheckrc
 bug.png
 fortranlib
+git-files.txt
 LICENCE.txt
 printScopeOfCountours.py
 README.md
