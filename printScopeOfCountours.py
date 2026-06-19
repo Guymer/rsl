@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Use the proper idiom in the main module ...
-# NOTE: See https://docs.python.org/3.12/library/multiprocessing.html#the-spawn-and-forkserver-start-methods
+# NOTE: See https://docs.python.org/3.13/library/multiprocessing.html#the-spawn-and-forkserver-start-methods
 if __name__ == "__main__":
     # NOTE: I downloaded the "OS Terrain 50" dataset in the "ASCII Grid and GML
     #       (Grid)" file format from the Ordnance Survey, see:
@@ -92,7 +92,7 @@ if __name__ == "__main__":
         contours[level] = 0                                                     # [#]
 
     # Load dataset ...
-    with zipfile.ZipFile(fname0, "r") as fObj0:
+    with zipfile.ZipFile(fname0, mode = "r") as fObj0:
         # Loop over members ...
         for fname1 in fObj0.namelist():
             # Skip this member if it is not a sub-dataset ...
@@ -107,7 +107,7 @@ if __name__ == "__main__":
             zipObj = io.BytesIO(fObj0.read(fname1))
 
             # Load sub-dataset ...
-            with zipfile.ZipFile(zipObj, "r") as fObj1:
+            with zipfile.ZipFile(zipObj, mode = "r") as fObj1:
                 # Read files into RAM so that they become seekable ...
                 # NOTE: https://stackoverflow.com/a/12025492
                 dbfObj = io.BytesIO(fObj1.read(f"{key}_line.dbf"))
