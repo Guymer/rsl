@@ -11,6 +11,23 @@ if __name__ == "__main__":
 
     # Import special modules ...
     try:
+        import matplotlib
+        matplotlib.rcParams.update(
+            {
+                       "axes.xmargin" : 0.01,
+                       "axes.ymargin" : 0.01,
+                            "backend" : "Agg",                                  # NOTE: See https://matplotlib.org/stable/gallery/user_interfaces/canvasagg.html
+                         "figure.dpi" : 300,
+                     "figure.figsize" : (9.6, 7.2),                             # NOTE: See https://github.com/Guymer/misc/blob/main/README.md#matplotlib-figure-sizes
+                          "font.size" : 8,
+                "image.interpolation" : "none",                                 # NOTE: See https://matplotlib.org/stable/gallery/images_contours_and_fields/interpolation_methods.html
+                     "image.resample" : False,
+            }
+        )
+        import matplotlib.pyplot
+    except:
+        raise Exception("\"matplotlib\" is not installed; run \"pip install --user matplotlib\"") from None
+    try:
         import PIL
         import PIL.Image
         import PIL.ImageDraw
@@ -63,8 +80,10 @@ if __name__ == "__main__":
 
     # **************************************************************************
 
-    # Create short-hand ...
-    font = PIL.ImageFont.truetype("SFNSMono.ttf", 72)
+    # Create short-hands ...
+    fontPath = matplotlib.font_manager.findfont("DejaVu Sans Mono")
+    fontSize = 72                                                               # [px]
+    font = PIL.ImageFont.truetype(fontPath, fontSize)
 
     # Find the frames ...
     frames = sorted(glob.glob("output/????m_010x.png"))
